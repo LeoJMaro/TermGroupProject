@@ -6,4 +6,4 @@ def add_invoice(vendor_id, invoice_number, invoice_date, invoice_total, payment_
     executeQueryAndCommit(sql)
 
 
-
+# add_invoice(69,'aaa111', 'NOW()', 299.99, 299.99, 'NOW()', 'NOW()')
