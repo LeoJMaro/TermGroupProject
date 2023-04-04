@@ -10,8 +10,9 @@ def add_customer(customer_first_name, customer_last_name, customer_phone, custom
     sql = f"INSERT INTO programming_group_project.customers VALUES (default, '{customer_first_name}', '{customer_last_name}', '{customer_phone}', '{customer_email}', '{customer_address}');"
     executeQueryAndCommit(sql)
 
-def increase_inventory():
-    pass
+def increase_inventory(inventory_stock):
+    sql = f"UPDATE programming_group_project.products SET inventory_stock = {inventory_stock};"
+    executeQueryAndCommit(sql)
 
 
 def decrease_inventory():
