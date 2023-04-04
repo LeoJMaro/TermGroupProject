@@ -7,7 +7,7 @@ def add_invoice(vendor_id, invoice_number, invoice_date, invoice_total, payment_
 
 
 def add_customer():
-    pass
+    print("Please Git Gods just work")
 
 
 def increase_inventory():
