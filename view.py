@@ -2,7 +2,6 @@ from prettytable import PrettyTable
 from controller import *
 
 # Placeholder view
-transaction_items = []
 products_table = PrettyTable()
 def initialize_tables():
     products_table = PrettyTable()
@@ -19,9 +18,10 @@ def display_options():
 def transaction_options():
     print('=' * 50)
     print('0. Exit')
-    print('1. Show Items')
+    print('1. Show Products')
     print('2. Add Item')
     print('3. Remove Item')
+    print('4. Show Current Transaction Items')
     print('=' * 50)
 
 
@@ -46,8 +46,8 @@ if __name__ == '__main__':
                             print(products_table)
                             user_product_choice = input('Choose product: ')
 
-
                         case '3':
                             pass
+
             case '2':
                 pass
