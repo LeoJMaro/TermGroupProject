@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS programming_group_project;
+DROP DATABASE IF EXISTS pgp;
 
-CREATE DATABASE programming_group_project;
+CREATE DATABASE pgp;
 
-USE programming_group_project;
+USE pgp;
 
 DROP TABLE IF EXISTS vendors;
 
