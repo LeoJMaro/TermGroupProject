@@ -3,11 +3,15 @@ from controller import *
 
 # Placeholder view
 products_table = PrettyTable()
+
+
 def initialize_tables():
-    products_table = PrettyTable()
-    products_table.field_names = show_products()[0]
-    products_table.add_rows(show_products()[1])
-    return products_table
+    current_products_table = PrettyTable()
+    current_products_table.field_names = show_products()[0]
+    current_products_table.add_rows(show_products()[1])
+    return current_products_table
+
+
 def display_options():
     print('=' * 50)
     print('0. Exit')
