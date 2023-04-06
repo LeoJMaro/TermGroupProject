@@ -16,12 +16,18 @@ def increase_inventory(intake_amount, product_id):
     sql = f"UPDATE programming_group_project.products SET inventory_stock = inventory_stock + {intake_amount} WHERE product_id = {product_id};"
     return executeQueryAndCommit(sql)
 
+
 def decrease_inventory(purchase_amount, product_id):
     sql = f"UPDATE programming_group_project.products SET inventory_stock = inventory_stock - {purchase_amount} WHERE product_id = {product_id};"
     return executeQueryAndCommit(sql)
 
+
 def get_product_by_id(product_id):
     sql = f"SELECT product_name, product_description, inventory_stock, price FROM products WHERE product_id = {product_id};"
+    return executeQueryAndReturnResult(sql)
+
+def get_customer_by_name(customer_full_name):
+    sql = f""
     return executeQueryAndReturnResult(sql)
 
 def show_products():
@@ -37,5 +43,3 @@ def search_invoice_by_customer_id(customer_id):
 def total_cost_breakdown_and_products_per_invoice():
     sql = f"SELECT ip.invoice_id AS 'Invoice ID',SUM(ip.product_quantity * p.price) AS 'Total Cost', GROUP_CONCAT(ip.product_quantity * p.price) AS 'Cost Per Product', GROUP_CONCAT(p.product_id) AS 'ID Numbers of Products Included', GROUP_CONCAT(ip.product_quantity) AS 'Quantity of Products' FROM invoice_products AS ip JOIN products AS p ON ip.product_id = p.product_id JOIN invoices AS i ON ip.invoice_id = i.customer_id GROUP BY ip.invoice_id;"
     return executeQueryAndReturnResult(sql)
-
-

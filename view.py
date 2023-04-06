@@ -25,11 +25,10 @@ def display_options():
 
 def transaction_options():
     print('=' * 50)
-    print('0. Exit')
-    print('1. Show Products')
+    print('1. Show Current Transaction Items')
     print('2. Add Item')
     print('3. Remove Item')
-    print('4. Show Current Transaction Items')
+    print('0. Exit')
     print('=' * 50)
 
 
@@ -47,7 +46,17 @@ if __name__ == '__main__':
                     user_choice = input('Enter a choice: ')
                     match user_choice:
                         case '0':
-                            # Create invoice in database here with add_invoice
+                            #Create Customer
+                            customer_fname = input('Enter your first name: ')
+                            customer_lname = input('Enter your last name: ')
+                            customer_phone = input('Enter your phone number: ')
+                            customer_email = input('Enter your email: ')
+                            customer_address = input('Enter your address: ')
+                            #add_customer(customer_fname, customer_lname, customer_phone, customer_email, customer_address)
+                            #Need a get_customer_by_name(fullname) function
+                            #get_customer_by_name(customer_fname+customer_lname)
+                            # add new invoice in database here with add_invoice
+                            #add_invoice(customer_id, 'NOW()')
                             break
                         case '1':
                             print(products_table)
