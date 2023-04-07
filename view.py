@@ -1,76 +1,83 @@
-from prettytable import PrettyTable
-from controller import *
+import sys
+import controller
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, \
+    QTableWidget, QTableWidgetItem
+from PyQt5.QtGui import QPixmap
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtGui import QCursor
 
-# Placeholder view
-products_table = PrettyTable()
-current_product_ids = []
-
-
-def initialize_tables():
-    current_products_table = PrettyTable()
-    current_products_table.field_names = show_products()[0]
-    current_products_table.add_rows(show_products()[1])
-    return current_products_table
+widgets = {
+    "buttons": {}
+}
 
 
-def display_options():
-    print('=' * 50)
-    print('0. Exit')
-    print('1. Start Transaction ')
-    print('2. Show Products')
-    print('3. Show Out Of Stock Products')
-    print('4. Show Last Month Customer History')
-    print('=' * 50)
+app = QApplication(sys.argv)
+
+window = QWidget()
+window.setWindowTitle("{Point of Sale")
+window.setFixedWidth(1000)
+window.setFixedHeight(500)
+# window.setStyleSheet("background:black;")
+
+grid = QGridLayout()
 
 
-def transaction_options():
-    print('=' * 50)
-    print('1. Show Current Transaction Items')
-    print('2. Add Item')
-    print('3. Remove Item')
-    print('0. Exit')
-    print('=' * 50)
+def homepage():
+
+    button_inventory = QPushButton("Inventory")
+    button_inventory.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    button_inventory.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["inventory"] = button_inventory
+    grid.addWidget(button_inventory, 0, 0)
+
+    Transaction = QPushButton("Transaction")
+    Transaction.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    Transaction.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["Transaction"] = Transaction
+    grid.addWidget(Transaction, 1, 0)
+
+    customer = QPushButton("customer")
+    customer.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    customer.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["customer"] = customer
+    grid.addWidget(customer, 2, 0)
+def inventory_page():
+    row = 0
+    table = QTableWidget()
+    table.column()
+    table.insertRow()
+    table.insertColumn()
+
+    grid.addWidget(table, 0, 0)
+
+    datos = controller.show_products()[1]
+    for endian in datos:
+        table.setRowCount(row + 1)
+
+        idDato = QTableWidgetItem(endian[0])
+        idDato.setTextAlignment(4)
+
+        table.setItem(row, 0, idDato)
+        table.setItem(row, 1, QTableWidgetItem(endian[1]))
+        table.setItem(row, 2, QTableWidgetItem(endian[2]))
+        table.setItem(row, 3, QTableWidgetItem(endian[3]))
+        table.setItem(row, 4, QTableWidgetItem(endian[4]))
+        table.setItem(row, 5, QTableWidgetItem(str(endian[5])))
+
+        row += 1
+
+inventory_page()
 
 
-if __name__ == '__main__':
-    products_table = initialize_tables()
-    while True:
-        display_options()
-        user_choice = input('Enter a choice: ')
-        match user_choice:
-            case '0':
-                break
-            case '1':
-                while True:
-                    transaction_options()
-                    user_choice = input('Enter a choice: ')
-                    match user_choice:
-                        case '0':
-                            #Create Customer
-                            customer_fname = input('Enter your first name: ')
-                            customer_lname = input('Enter your last name: ')
-                            customer_phone = input('Enter your phone number: ')
-                            customer_email = input('Enter your email: ')
-                            customer_address = input('Enter your address: ')
-                            #add_customer(customer_fname, customer_lname, customer_phone, customer_email, customer_address)
-                            #Need a get_customer_by_name(fullname) function
-                            #get_customer_by_name(customer_fname+customer_lname)
-                            # add new invoice in database here with add_invoice
-                            #add_invoice(customer_id, 'NOW()')
-                            break
-                        case '1':
-                            print(products_table)
-                        case '2':
-                            print(products_table)
-                            user_product_choice = input('Choose product: ')
-                        case '3':
-                            pass
 
-            case '2':
-                print(products_table)
-            case '3':
-                pass
-            case '4':
-                pass
-            case '5':
-                pass
+window.setLayout(grid)
+
+window.show()
+
+sys.exit(app.exec())
+
+
+
+
+
+
