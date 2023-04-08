@@ -47,18 +47,18 @@ def inventory_page():
     table.width()
     grid.addWidget(table, 0, 0)
     table.setColumnCount(6)
-    datos = controller.show_products()[1]
-    for row, endian in enumerate(datos):
+    data = controller.show_products()[1]
+    for row, end in enumerate(data):
 
-        idDato = QTableWidgetItem(endian[0])
+        idDato = QTableWidgetItem(end[0])
         idDato.setTextAlignment(4)
         table.insertRow(row)
         table.setItem(row, 0, idDato)
-        table.setItem(row, 1, QTableWidgetItem(endian[1]))
-        table.setItem(row, 2, QTableWidgetItem(endian[2]))
-        table.setItem(row, 3, QTableWidgetItem(endian[3]))
-        table.setItem(row, 4, QTableWidgetItem(endian[4]))
-        table.setItem(row, 5, QTableWidgetItem(str(endian[5])))
+        table.setItem(row, 1, QTableWidgetItem(str(end[1])))
+        table.setItem(row, 2, QTableWidgetItem(str(end[2])))
+        table.setItem(row, 3, QTableWidgetItem(str(end[3])))
+        table.setItem(row, 4, QTableWidgetItem(str(end[4])))
+        table.setItem(row, 5, QTableWidgetItem(str(end[5])))
 
 inventory_page()
 
