@@ -16,3 +16,4 @@ def executeQueryAndCommit(query, host='localhost', username=USER, password=PASSW
             cursor.execute(query)
             conn.commit()
             return cursor.rowcount
+

@@ -6,8 +6,10 @@ def add_invoice(vendor_id, invoice_number, invoice_date, invoice_total, payment_
     return executeQueryAndCommit(sql)
 
 
-def add_customer():
-    pass
+
+def add_customer(customer_first_name, customer_last_name, customer_phone, customer_email, customer_address):
+    sql = f"INSERT INTO pgp.customers VALUES (DEFAULT, '{customer_first_name}', '{customer_last_name}', '{customer_phone}', '{customer_email}', '{customer_address}');"
+    return executeQueryAndCommit(sql)
 
 
 def increase_inventory():
