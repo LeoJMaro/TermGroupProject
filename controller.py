@@ -30,6 +30,10 @@ def get_customer_by_name(customer_full_name):
     sql = f"SELECT * FROM customers WHERE CONCAT(customer_first_name, ' ', customer_last_name) = '{customer_full_name}';"
     return executeQueryAndReturnResult(sql)
 
+def get_most_recent_invoice_id_by_date():
+    sql = f"SELECT invoice_id FROM invoices ORDER BY invoice_date DESC LIMIT 1;"
+    return executeQueryAndReturnResult(sql)
+
 def search_invoice_by_customer_id(customer_id):
     sql = f"SELECT ip.invoice_id AS 'Invoice ID', SUM(ip.product_quantity * p.price) AS 'Total Cost' FROM invoice_products AS ip JOIN products AS p ON ip.product_id = p.product_id JOIN invoices AS i ON ip.invoice_id = i.invoice_id WHERE i.customer_id = {customer_id} GROUP BY ip.invoice_id;"
     return executeQueryAndReturnResult(sql)
