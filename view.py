@@ -9,11 +9,6 @@ from PyQt5.QtGui import QCursor
 
 from controller import *
 
-widgets = {
-    "buttons": {}
-}
-
-
 app = QApplication(sys.argv)
 
 window = QWidget()
@@ -25,21 +20,8 @@ window.setStyleSheet("background:black;")
 
 grid = QGridLayout()
 
-def homepage():
-    button_inventory = QPushButton("Inventory")
-    button_inventory.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-    button_inventory.setStyleSheet("border: 4px solid white;" +
-                         "color:white;")
-    widgets["buttons"]["inventory"] = button_inventory
-    grid.addWidget(button_inventory, 0, 0)
-    Transaction = QPushButton("Transaction")
-    Transaction.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-    Transaction.setStyleSheet("border: 4px solid white;" +
-                                   "color:white;")
-    widgets["buttons"]["Transaction"] = Transaction
-    grid.addWidget(Transaction, 1, 0)
 
-def customer(): #function that sets all the lables, buttons, line edits in place
+def customer_display(): #function that sets all the lables, buttons, line edits in place
                                            # Window title and title, background color
     window.setWindowTitle("Add Customer")
     title = QLabel('Customer Information')
@@ -110,7 +92,7 @@ def customer(): #function that sets all the lables, buttons, line edits in place
 
     add_button.clicked.connect(add_new_customer)
 
-def point_of_sale():#Function that sets all labels, and combo boxes in place
+def point_of_sale_display():#Function that sets all labels, and combo boxes in place
 
     window.setWindowTitle("Point of Sale")
     select_customer_label = QLabel('Select Customer:')
@@ -126,6 +108,10 @@ def point_of_sale():#Function that sets all labels, and combo boxes in place
     for i in row[1]:
         data = str(i[0])
         customer_combobox.addItem(data)
+
+    show_invoice_button = QPushButton('Show Invoice')  # Button when clicked shows invoice
+    grid.addWidget(show_invoice_button, 4, 1)
+    show_invoice_button.setStyleSheet("background-color: white;")
                                             #Label that holds customer_id, hidden from user, for use by later function
     customer_id_label = QLabel("")
     grid.addWidget(customer_id_label,0,3)
@@ -152,12 +138,19 @@ def point_of_sale():#Function that sets all labels, and combo boxes in place
     product_combobox = QComboBox(window)
     grid.addWidget(product_combobox, 1, 1)
     product_combobox.setStyleSheet("background-color: white;")
-                                                        #Uses for loop to add product_name from product table
     product_combobox.addItem('')
+
+    quantity_line_edit = QLineEdit()
+    grid.addWidget(quantity_line_edit,1,2)
+    quantity_line_edit.setStyleSheet("background-color: white;")
+
+                                                        #Uses for loop to add product_name from product table
+
     row = get_product_names()
     for i in row[1]:
         pdata = str(i[0])
         product_combobox.addItem(pdata)
+
 
     def update_price_label(): #Function which updates price label with price of current product selection from combobox
         product_name = product_combobox.currentText()
@@ -207,23 +200,41 @@ def point_of_sale():#Function that sets all labels, and combo boxes in place
                 feedback_label.setText("Failed to Add")
         def add_product_to_invoice(): # Function which gets product id from the products table using the product name selected from combobox
                                       # and uses previous query of invoice id then inserts both of them into invoice_products
-            product_choice = product_combobox.currentText()
-            product_id = get_product_id(product_choice)
-            add_product_to_invoice_products(invoice_id,product_id)
-            #SHOULD BE A COUNT OF HOW MANY TIMES A PRODUCT ID WITH A SPECIFIED INVOICE ID IS PRESENT FOR QUANTITY PURPOSES
+            try:
+                product_choice = product_combobox.currentText()
+                quantity = quantity_line_edit.text()
+                print(quantity)
+                product_id = get_product_id(product_choice)
+                product_info_to_controller = add_product_to_invoice_products(invoice_id,product_id,quantity)
+ #SHOULD BE A COUNT OF HOW MANY TIMES A PRODUCT ID WITH A SPECIFIED INVOICE ID IS PRESENT FOR QUANTITY PURPOSES
+            except Exception as e:
+                feedback_label.setText(str(e))
+            else:
+                if product_info_to_controller == 1:
+                    feedback_label.setText("Successfully Added")
+                else:
+                    feedback_label.setText("Failed to Add")
+
         add_product_id_to_invoice_products_button.clicked.connect(add_product_to_invoice)
-
-
     add_customer_id_to_invoices_button.clicked.connect(add_customer_to_invoices)
 
-    #NEEDS A SHOW INVOICE BUTTON
 
+
+def invoice_display(): #INDENT FROM HERE
+    window.setWindowTitle("Invoice")
+    title = QLabel('Purchase Information')
+    title.setStyleSheet("color:white;"+"font-size: 20px;")
+    grid.addWidget(title, 0, 1)
+
+#show_invoice_button.clicked.connect(invoice_display)
+                        #TO HERE
 
 
 if __name__ == '__main__':
     # homepage()
-    # customer()
-    point_of_sale()
+    #customer_display()
+    point_of_sale_display()
+    #invoice_display()
 
     window.setLayout(grid)
     window.show()

@@ -34,7 +34,7 @@ def get_product_names():
 def get_price_with_product_name(product_name):
     sql = f"SELECT price FROM pgp.products WHERE product_name = '{product_name}';"
     query = str(executeQueryAndReturnResultNOCOLUMNNAME(sql))
-    print(query[11:16])
+    #print(query[11:16])
     return query
 
 def add_customer_id_to_invoices(customer_id):
@@ -45,8 +45,8 @@ def get_most_recent_invoice_id_by_date():
     sql = f"SELECT invoice_id FROM invoices ORDER BY invoice_date DESC LIMIT 1;"
     return executeQueryAndReturnResultNOCOLUMNNAME(sql)[0][0]
 
-def add_product_to_invoice_products(invoice_id,product_choice):
-    sql = f"INSERT INTO invoice_products(invoice_id,product_id,product_quantity) VALUES ({invoice_id},{product_choice}, 1);"
+def add_product_to_invoice_products(invoice_id,product_choice,quantity):
+    sql = f"INSERT INTO invoice_products(invoice_id,product_id,product_quantity) VALUES ({invoice_id},{product_choice}, {quantity});"
     return executeQueryAndCommit(sql)
 
 def get_product_id(product_choice):
