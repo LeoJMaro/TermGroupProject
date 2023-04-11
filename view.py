@@ -243,18 +243,21 @@ def homepage():
     button_inventory.setStyleSheet("border: 4px solid white;" + "color:white;")
     widgets["buttons"]["inventory"] = button_inventory
     grid.addWidget(button_inventory, 0, 0)
+    button_inventory.clicked.connect(inventory_page)
 
     Transaction = QPushButton("Transaction")
     Transaction.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
     Transaction.setStyleSheet("border: 4px solid white;" + "color:white;")
     widgets["buttons"]["Transaction"] = Transaction
     grid.addWidget(Transaction, 1, 0)
+    Transaction.clicked.connect(point_of_sale_display)
 
     customer = QPushButton("customer")
     customer.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
     customer.setStyleSheet("border: 4px solid white;" + "color:white;")
     widgets["buttons"]["customer"] = customer
     grid.addWidget(customer, 2, 0)
+    customer.clicked.connect(customer_display)
 def inventory_page():
     table = QTableWidget()
     table.height()
