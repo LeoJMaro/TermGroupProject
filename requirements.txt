@@ -1,2 +1,3 @@
 wcwidth==0.2.6
 mysql-connector-python==8.0.32
+PyQt5==5.15.9
