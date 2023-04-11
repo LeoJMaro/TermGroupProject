@@ -1,21 +1,25 @@
-from prettytable import PrettyTable
-
 import sys
-from PyQt5.QtWidgets import *
+import controller
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, \
+    QTableWidget, QTableWidgetItem
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QCursor
 
 
-from controller import *
+widgets = {
+    "buttons": {}
+}
+
 
 app = QApplication(sys.argv)
 
 window = QWidget()
 
+window.setWindowTitle("{Point of Sale")
 window.setFixedWidth(1000)
 window.setFixedHeight(500)
-window.setStyleSheet("background:black;")
+# window.setStyleSheet("background:black;")
 
 
 grid = QGridLayout()
@@ -239,3 +243,57 @@ if __name__ == '__main__':
     window.setLayout(grid)
     window.show()
     sys.exit(app.exec())
+
+def homepage():
+
+    button_inventory = QPushButton("Inventory")
+    button_inventory.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    button_inventory.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["inventory"] = button_inventory
+    grid.addWidget(button_inventory, 0, 0)
+
+    Transaction = QPushButton("Transaction")
+    Transaction.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    Transaction.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["Transaction"] = Transaction
+    grid.addWidget(Transaction, 1, 0)
+
+    customer = QPushButton("customer")
+    customer.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    customer.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["customer"] = customer
+    grid.addWidget(customer, 2, 0)
+def inventory_page():
+    table = QTableWidget()
+    table.height()
+    table.width()
+    grid.addWidget(table, 0, 0)
+    table.setColumnCount(6)
+    data = controller.show_products()[1]
+    for row, end in enumerate(data):
+
+        idDato = QTableWidgetItem(end[0])
+        idDato.setTextAlignment(4)
+        table.insertRow(row)
+        table.setItem(row, 0, idDato)
+        table.setItem(row, 1, QTableWidgetItem(str(end[1])))
+        table.setItem(row, 2, QTableWidgetItem(str(end[2])))
+        table.setItem(row, 3, QTableWidgetItem(str(end[3])))
+        table.setItem(row, 4, QTableWidgetItem(str(end[4])))
+        table.setItem(row, 5, QTableWidgetItem(str(end[5])))
+
+inventory_page()
+
+
+
+window.setLayout(grid)
+
+window.show()
+
+sys.exit(app.exec())
+
+
+
+
+
+
