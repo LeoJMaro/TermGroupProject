@@ -1,7 +1,9 @@
 import sys
+
 import controller
+from controller import *
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, \
-    QTableWidget, QTableWidgetItem
+    QTableWidget, QTableWidgetItem, QLineEdit, QComboBox
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QCursor
@@ -19,7 +21,7 @@ window = QWidget()
 window.setWindowTitle("{Point of Sale")
 window.setFixedWidth(1000)
 window.setFixedHeight(500)
-# window.setStyleSheet("background:black;")
+window.setStyleSheet("background:black;")
 
 
 grid = QGridLayout()
@@ -234,16 +236,6 @@ def invoice_display(): #INDENT FROM HERE
                         #TO HERE
 
 
-if __name__ == '__main__':
-    # homepage()
-    #customer_display()
-    point_of_sale_display()
-    #invoice_display()
-
-    window.setLayout(grid)
-    window.show()
-    sys.exit(app.exec())
-
 def homepage():
 
     button_inventory = QPushButton("Inventory")
@@ -282,18 +274,12 @@ def inventory_page():
         table.setItem(row, 4, QTableWidgetItem(str(end[4])))
         table.setItem(row, 5, QTableWidgetItem(str(end[5])))
 
-inventory_page()
-
-
-
+homepage()
 window.setLayout(grid)
 
 window.show()
 
 sys.exit(app.exec())
-
-
-
 
 
 
