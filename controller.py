@@ -10,7 +10,9 @@ def add_to_invoices_with_customer_name(customer_name, product_name):
     sql = f"INSERT INTO programming_group_project.invoices VALUES (default, {vendor_id}, '{invoice_number}', {invoice_date}, {invoice_total}, {payment_total}, {invoice_due_date}, {payment_date});"
     return executeQueryAndCommit(sql)
 
-
+def generate_finished_invoice(invoice_id):
+    sql = f"SELECT p.product_name AS 'Product',p.price AS 'Price Per Unit',ip.product_quantity AS 'Quantity',(p.price * ip.product_quantity) AS 'Total Per Product' FROM products AS p JOIN invoice_products AS ip ON p.product_id = ip.product_id WHERE ip.invoice_id = {invoice_id} UNION ALL SELECT 'Total', " ", " f", SUM(p.price * ip.product_quantity) FROM products AS p JOIN invoice_products AS ip ON p.product_id = ip.product_id WHERE ip.invoice_id = {invoice_id};"
+    return executeQueryAndReturnResult(sql)
 
 
 def add_customer(customer_first_name, customer_last_name, customer_phone, customer_email, customer_address):
