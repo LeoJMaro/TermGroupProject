@@ -19,7 +19,15 @@ window = QWidget()
 window.setWindowTitle("{Point of Sale")
 window.setFixedWidth(1000)
 window.setFixedHeight(500)
-# window.setStyleSheet("background:black;")
+)
+
+window.setStyleSheet("background:black;")
+
+invoice_window = QWidget()
+invoice_window.setFixedWidth(1000)
+invoice_window.setFixedHeight(500)
+invoice_window.setStyleSheet("background:black;")
+
 
 grid = QGridLayout()
 
@@ -182,12 +190,14 @@ def point_of_sale_display():
     show_invoice_button = QPushButton('Show Invoice')  # Button when clicked shows invoice
     grid.addWidget(show_invoice_button, 4, 1)
     show_invoice_button.setStyleSheet("background-color: white;")
+
     # Label that holds customer_id, hidden from user, for use by later function
     customer_id_label = QLabel("")
     grid.addWidget(customer_id_label,0,3)
 
     # function which updates customer_id label with corresponding id for customer name selected
     def update_id_label():
+
         selected_name = customer_combobox.currentText()
         customer_fullname_split = selected_name.split(' ')
         customer_first_name = customer_fullname_split[0]
@@ -211,9 +221,13 @@ def point_of_sale_display():
     product_combobox.setStyleSheet("background-color: white;")
     product_combobox.addItem('')
 
+    quantity_label = QLabel('Qty:')
+    grid.addWidget(quantity_label,1,2)
+    quantity_label.setStyleSheet("color: white;"+"max-width: 20px")
+
     quantity_line_edit = QLineEdit()
-    grid.addWidget(quantity_line_edit,1,2)
-    quantity_line_edit.setStyleSheet("background-color: white;")
+    grid.addWidget(quantity_line_edit,1,3)
+    quantity_line_edit.setStyleSheet("background-color: white;"+"max-width: 50px")
 
         # Uses for loop to add product_name from product table
 
@@ -228,7 +242,7 @@ def point_of_sale_display():
         product_name = product_combobox.currentText()
         info = get_price_with_product_name(product_name)
         #print(info)
-        price = str(f"List Price: ${info[11:16]}")
+        price = str(f"List Price: ${info[11:16]} ea")
         price_label.setText(price)
 
 
@@ -239,11 +253,11 @@ def point_of_sale_display():
     add_customer_id_to_invoices_button.setStyleSheet("background-color: white;")
     # Label which holds the invoice id
     invoice_id_label = QLabel()
-    grid.addWidget(invoice_id_label, 0, 5)
+    grid.addWidget(invoice_id_label, 4, 0)
     invoice_id_label.setStyleSheet('color: white;')
     # Label which holds product_id
     product_id_label = QLabel()
-    grid.addWidget(product_id_label, 4, 5)
+    grid.addWidget(product_id_label, 4, 0)
     product_id_label.setStyleSheet('color: white;')
     # Button which when clicked adds product id to invoice products table
     add_product_id_to_invoice_products_button = QPushButton("Add Product")
@@ -261,6 +275,7 @@ def point_of_sale_display():
             customer_id = customer_id_label.text()
             id_to_controller = add_customer_id_to_invoices(int(customer_id))
             invoice_id = get_most_recent_invoice_id_by_date()
+            print(invoice_id)
 
         except Exception as e:
             feedback_label.setText(str(e))
@@ -277,11 +292,14 @@ def point_of_sale_display():
             try:
                 product_choice = product_combobox.currentText()
                 quantity = quantity_line_edit.text()
-                print(quantity)
+
                 product_id = get_product_id(product_choice)
+                #print(product_id)
                 product_info_to_controller = add_product_to_invoice_products(invoice_id,product_id,quantity)
+
                 # SHOULD BE A COUNT OF HOW MANY TIMES A PRODUCT ID WITH A SPECIFIED INVOICE ID IS PRESENT FOR
                 # QUANTITY PURPOSES
+
             except Exception as e:
                 feedback_label.setText(str(e))
             else:
@@ -295,15 +313,79 @@ def point_of_sale_display():
 
 
 def invoice_display():
-    window.setWindowTitle("Invoice")
-    title = QLabel('Purchase Information')
-    title.setStyleSheet("color:white;"+"font-size: 20px;")
-    grid.addWidget(title, 0, 1)
+    invoice_window.show()
+    grid2 = QGridLayout(invoice_window)
+    invoice_window.setWindowTitle("Invoice")
+    invoice_title = QLabel('Purchase Information')
+    invoice_title.setStyleSheet("color:white;"+"font-size: 20px;")
+    grid2.addWidget(invoice_title, 1, 0)
 
-# show_invoice_button.clicked.connect(invoice_display)
-# #TO HERE
+    table = QTableWidget()
+    table.setStyleSheet("background-color: white;")
+    table.height()
+    table.width()
+    grid2.addWidget(table, 2, 0)
+    table.setColumnCount(6)
+    data = controller.show_products()[1]
+    for row, end in enumerate(data):
+
+        idDato = QTableWidgetItem(end[0])
+        idDato.setTextAlignment(4)
+        table.insertRow(row)
+        table.setItem(row, 0, idDato)
+        table.setItem(row, 1, QTableWidgetItem(str(end[1])))
+        table.setItem(row, 2, QTableWidgetItem(str(end[2])))
+        table.setItem(row, 3, QTableWidgetItem(str(end[3])))
+        table.setItem(row, 4, QTableWidgetItem(str(end[4])))
+        table.setItem(row, 5, QTableWidgetItem(str(end[5])))
+
+
+
+
+
+def homepage():
+
+    button_inventory = QPushButton("Inventory")
+    button_inventory.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    button_inventory.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["inventory"] = button_inventory
+    grid.addWidget(button_inventory, 0, 0)
+    button_inventory.clicked.connect(inventory_page)
+
+    Transaction = QPushButton("Transaction")
+    Transaction.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    Transaction.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["Transaction"] = Transaction
+    grid.addWidget(Transaction, 1, 0)
+    Transaction.clicked.connect(point_of_sale_display)
+
+    customer = QPushButton("customer")
+    customer.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    customer.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["customer"] = customer
+    grid.addWidget(customer, 2, 0)
+    customer.clicked.connect(customer_display)
+def inventory_page():
+    table = QTableWidget()
+    table.height()
+    table.width()
+    grid.addWidget(table, 0, 0)
+    table.setColumnCount(6)
+    data = controller.show_products()[1]
+    for row, end in enumerate(data):
+
+        idDato = QTableWidgetItem(end[0])
+        idDato.setTextAlignment(4)
+        table.insertRow(row)
+        table.setItem(row, 0, idDato)
+        table.setItem(row, 1, QTableWidgetItem(str(end[1])))
+        table.setItem(row, 2, QTableWidgetItem(str(end[2])))
+        table.setItem(row, 3, QTableWidgetItem(str(end[3])))
+        table.setItem(row, 4, QTableWidgetItem(str(end[4])))
+        table.setItem(row, 5, QTableWidgetItem(str(end[5])))
 
 homepage()
+#point_of_sale_display()
 
 window.setLayout(grid)
 
