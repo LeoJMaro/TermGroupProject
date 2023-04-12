@@ -77,7 +77,7 @@ def inventory_page():
     table = QTableWidget()
     table.height()
     table.width()
-    grid.addWidget(table, 0, 0)
+    grid.addWidget(table, 1, 0)
     table.setColumnCount(6)
     data = controller.show_products()[1]
     table.setHorizontalHeaderLabels(["product_id",
@@ -98,6 +98,19 @@ def inventory_page():
         table.setItem(row, 3, QTableWidgetItem(str(end[3])))
         table.setItem(row, 4, QTableWidgetItem(str(end[4])))
         table.setItem(row, 5, QTableWidgetItem(str(end[5])))
+    add_to_inventory_button = QPushButton("Add to Inventory")
+    add_to_inventory_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    grid.addWidget(add_to_inventory_button,0,0)
+    add_to_inventory_button.setStyleSheet("background-color: white;")
+    add_to_inventory_button.clicked.connect(customer_display)
+
+    def add_to_inventory_display():
+        window.setWindowTitle("Add to Inventory")
+
+        product_name_label = QLabel("Product Name:")
+        grid.addWidget(product_name_label,1,1)
+        product_name_label.setStyleSheet("")
+
 
         # function that sets all the labels, buttons, line edits in place Window title and title, background color
 def customer_display():
