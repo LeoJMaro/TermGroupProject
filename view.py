@@ -32,7 +32,7 @@ invoice_window.setStyleSheet("background:black;")
 grid = QGridLayout()
 
 def homepage():
-
+    window.setWindowTitle("Newfiebuddy's Board Game Emporium")
     button_inventory = QPushButton("Inventory")
     button_inventory.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
     button_inventory.setStyleSheet("border: 4px solid white;" + "color:white;")
@@ -79,14 +79,198 @@ def inventory_page():
     add_to_inventory_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
     grid.addWidget(add_to_inventory_button,0,0)
     add_to_inventory_button.setStyleSheet("background-color: white;")
-    add_to_inventory_button.clicked.connect(customer_display)
+    add_to_inventory_button.clicked.connect(add_to_inventory_display)
 
-    def add_to_inventory_display():
-        window.setWindowTitle("Add to Inventory")
+def add_to_inventory_display():
 
-        product_name_label = QLabel("Product Name:")
-        grid.addWidget(product_name_label,1,1)
-        product_name_label.setStyleSheet("")
+#-------------------------------------------------------- add products to inventory section
+    window.setWindowTitle("Inventory Management")
+    inv_management_title = QLabel('Inventory Management')
+    grid.addWidget(inv_management_title,0,4)
+    inv_management_title.setStyleSheet("color:white;")
+
+    vendor_name_label = QLabel('Vendor Name:')
+    grid.addWidget(vendor_name_label,1,0)
+    vendor_name_label.setStyleSheet("color: white;")
+    vendor_name_combobox = QComboBox(window)
+    grid.addWidget(vendor_name_combobox, 1, 1)
+    vendor_name_combobox.setStyleSheet("background-color: white;")
+
+    vendor_name_combobox.addItem('')
+    row = get_vendor_names()
+    for i in row:
+        data = str(i[0])
+        vendor_name_combobox.addItem(data)
+
+    product_name_label = QLabel("Product Name:")
+    grid.addWidget(product_name_label,1,2)
+    product_name_label.setStyleSheet("color: white;"+"text-align: left;")
+    product_name_textbox = QLineEdit()
+    grid.addWidget(product_name_textbox,1,3)
+    product_name_textbox.setStyleSheet("background-color: white;")
+
+    product_description_label = QLabel("Description:")
+    grid.addWidget(product_description_label, 1, 4)
+    product_description_label.setStyleSheet("color: white;" + "text-align: left;")
+    product_description_textbox = QLineEdit()
+    grid.addWidget(product_description_textbox, 1, 5)
+    product_description_textbox.setStyleSheet("background-color: white;")
+
+    product_quantity_label = QLabel("Quantity:")
+    grid.addWidget(product_quantity_label, 1, 6)
+    product_quantity_label.setStyleSheet("color: white;" + "text-align: left;")
+    product_quantity_textbox = QLineEdit()
+    grid.addWidget(product_quantity_textbox, 1, 7)
+    product_quantity_textbox.setStyleSheet("background-color: white;")
+
+    product_price_label = QLabel("Price/Unit:")
+    grid.addWidget(product_price_label, 1, 8)
+    product_price_label.setStyleSheet("color: white;" + "text-align: left;")
+    product_price_textbox = QLineEdit()
+    grid.addWidget(product_price_textbox, 1, 9)
+    product_price_textbox.setStyleSheet("background-color: white;")
+
+    add_new_product_feedback_label = QLabel()
+    grid.addWidget(add_new_product_feedback_label,3,4)
+    add_new_product_feedback_label.setStyleSheet("color:white;"+"colspan: 3")
+
+    add_new_product_button = QPushButton('Add New Product')
+    grid.addWidget(add_new_product_button,1,10)
+    add_new_product_button.setStyleSheet("background-color:white;")
+
+
+    def add_new_product():
+
+
+        try:
+            vendor_name = vendor_name_combobox.currentText()
+            vendor_id = get_vendor_id_with_vendor_name(vendor_name)
+            product_name = product_name_textbox.text()
+            product_description = product_description_textbox.text()
+            product_quantity = product_quantity_textbox.text()
+            product_price = product_price_textbox.text()
+            new_product_to_controller = add_new_product_to_products(vendor_id,product_name,product_description,
+                                                                    product_quantity,product_price)
+
+        except Exception as e:
+            add_new_product_feedback_label.setText(str(e))
+
+        else:
+            if new_product_to_controller == 1:
+                add_new_product_feedback_label.setText("Successfully Added")
+            else:
+                add_new_product_feedback_label.setText("Failed to Add")
+
+    add_new_product_button.clicked.connect(add_new_product)
+
+#----------------------------------------------------------------------- add quantity section
+    add_quantity_label1 = QLabel("Add")
+    grid.addWidget(add_quantity_label1,4,0)
+    add_quantity_label1.setStyleSheet("color:white;")
+
+    add_quantity_textbox = QLineEdit()
+    grid.addWidget(add_quantity_textbox,4,1)
+    add_quantity_textbox.setStyleSheet("background-color: white;")
+
+    add_quantity_label2 = QLabel("units of")
+    grid.addWidget(add_quantity_label2,4,2)
+    add_quantity_label2.setStyleSheet("color:white;")
+
+    add_products_combobox = QComboBox(window)
+    grid.addWidget(add_products_combobox,4,3)
+    add_products_combobox.setStyleSheet("background-color: white;")
+
+
+    add_products_combobox.addItem('')
+    row = get_product_names()
+    for i in row[1]:
+        data = str(i[0])
+        add_products_combobox.addItem(data)
+
+    add_quantity_label3 = QLabel("to inventory.")
+    grid.addWidget(add_quantity_label3,4,4)
+    add_quantity_label3.setStyleSheet("color:white;")
+
+    increase_quantity_button = QPushButton('Increase Quantity')
+    grid.addWidget(increase_quantity_button,4,5)
+    increase_quantity_button.setStyleSheet("background-color:white;")
+
+    def increase_quantity():
+        try:
+            quantity = add_quantity_textbox.text()
+            product_name = add_products_combobox.currentText()
+            update_quantity_to_controller = increase_inventory(int(quantity),product_name)
+
+        except Exception as e:
+            change_quantity_feedback_label.setText(str(e))
+
+        else:
+            if update_quantity_to_controller == 1:
+                change_quantity_feedback_label.setText("Successfully Updated")
+            else:
+                change_quantity_feedback_label.setText("Failed to Update")
+
+    increase_quantity_button.clicked.connect(increase_quantity)
+#-------------------------------------------------------------------- subtract quantity section
+
+    subtract_quantity_label1 = QLabel("Subtract")
+    grid.addWidget(subtract_quantity_label1, 6, 0)
+    subtract_quantity_label1.setStyleSheet("color:white;")
+
+    subtract_quantity_textbox = QLineEdit()
+    grid.addWidget(subtract_quantity_textbox, 6, 1)
+    subtract_quantity_textbox.setStyleSheet("background-color: white;")
+
+    subtract_quantity_label2 = QLabel("units of")
+    grid.addWidget(subtract_quantity_label2, 6, 2)
+    subtract_quantity_label2.setStyleSheet("color:white;")
+
+    subtract_products_combobox = QComboBox(window)
+    grid.addWidget(subtract_products_combobox, 6, 3)
+    subtract_products_combobox.setStyleSheet("background-color: white;")
+
+
+    subtract_products_combobox.addItem('')
+    row = get_product_names()
+    for i in row[1]:
+        data = str(i[0])
+        subtract_products_combobox.addItem(data)
+
+    subtract_quantity_label3 = QLabel("from inventory.")
+    grid.addWidget(subtract_quantity_label3, 6, 4)
+    subtract_quantity_label3.setStyleSheet("color:white;")
+
+
+    decrease_quantity_button = QPushButton('Decrease Quantity')
+    grid.addWidget(decrease_quantity_button, 6, 5)
+    decrease_quantity_button.setStyleSheet("background-color:white;")
+
+    change_quantity_feedback_label = QLabel()
+    grid.addWidget(change_quantity_feedback_label,7,4)
+    change_quantity_feedback_label.setStyleSheet("color: white;"+"colspan: 3")
+
+
+    def decrease_quantity():
+        try:
+            quantity = subtract_quantity_textbox.text()
+            product_name = subtract_products_combobox.currentText()
+            update_quantity_to_controller = decrease_inventory(int(quantity), product_name)
+
+        except Exception as e:
+            change_quantity_feedback_label.setText(str(e))
+
+        else:
+            if update_quantity_to_controller == 1:
+                change_quantity_feedback_label.setText("Successfully Updated")
+            else:
+                change_quantity_feedback_label.setText("Failed to Update")
+
+
+    decrease_quantity_button.clicked.connect(decrease_quantity)
+
+
+
+
 
 
 def customer_display(): #function that sets all the lables, buttons, line edits in place
@@ -148,14 +332,13 @@ def customer_display(): #function that sets all the lables, buttons, line edits 
             customer_phone = phone_input.text()
             customer_email = email_input.text()
             customer_address = address_input.text()
-            print("worked")
             to_controller = add_customer(customer_first_name,customer_last_name,customer_phone,customer_email,customer_address)
         except Exception as e:
             feedback_label.setText(str(e))
 
         else:
             if to_controller == 1:
-                feedback_label.setText("Customer Added")
+                feedback_label.setText(f"{customer_first_name} {customer_last_name} Added")
             else:
                 feedback_label.setText("Failed to Add Customer")
 
@@ -186,6 +369,7 @@ def point_of_sale_display():#Function that sets all labels, and combo boxes in p
     customer_id_label = QLabel("")
     grid.addWidget(customer_id_label,0,3)
     #customer_id_label.setStyleSheet("color: white;")
+    #NEEDS TO BE HIDDEN
 
     def update_id_label():              # function which updates customer_id label with corresponding id for customer name selected
 
@@ -216,7 +400,7 @@ def point_of_sale_display():#Function that sets all labels, and combo boxes in p
     grid.addWidget(quantity_label,1,2)
     quantity_label.setStyleSheet("color: white;"+"max-width: 20px")
 
-    quantity_line_edit = QLineEdit()
+    quantity_line_edit = QLineEdit('1')
     grid.addWidget(quantity_line_edit,1,3)
     quantity_line_edit.setStyleSheet("background-color: white;"+"max-width: 50px")
 
@@ -231,7 +415,6 @@ def point_of_sale_display():#Function that sets all labels, and combo boxes in p
     def update_price_label(): #Function which updates price label with price of current product selection from combobox
         product_name = product_combobox.currentText()
         info = get_price_with_product_name(product_name)
-        #print(info)
         price = str(f"List Price: ${info[11:16]} ea")
         price_label.setText(price)
 
@@ -245,10 +428,12 @@ def point_of_sale_display():#Function that sets all labels, and combo boxes in p
     invoice_id_label = QLabel()
     grid.addWidget(invoice_id_label, 4, 0)
     invoice_id_label.setStyleSheet('color: white;')
+    #NEEDS TO BE HIDDEN
                                                             #Label which holds product_id
     product_id_label = QLabel()
     grid.addWidget(product_id_label, 4, 0)
     product_id_label.setStyleSheet('color: white;')
+    #NEEDS TO BE HIDDEN
                                                             #Button which when clicked adds product id to invoice products table
     add_product_id_to_invoice_products_button = QPushButton("Add Product")
     grid.addWidget(add_product_id_to_invoice_products_button, 1, 4)
@@ -265,7 +450,7 @@ def point_of_sale_display():#Function that sets all labels, and combo boxes in p
             customer_id = customer_id_label.text()
             id_to_controller = add_customer_id_to_invoices(int(customer_id))
             invoice_id = get_most_recent_invoice_id_by_date()
-            print(invoice_id)
+
 
         except Exception as e:
             feedback_label.setText(str(e))
@@ -282,7 +467,6 @@ def point_of_sale_display():#Function that sets all labels, and combo boxes in p
                 quantity = quantity_line_edit.text()
 
                 product_id = get_product_id(product_choice)
-                #print(product_id)
                 product_info_to_controller = add_product_to_invoice_products(invoice_id,product_id,quantity)
 
             except Exception as e:
@@ -312,7 +496,7 @@ def invoice_display():
     table.width()
     grid2.addWidget(table, 2, 0)
     table.setColumnCount(6)
-    data = controller.show_products()[1]
+    data = controller.show_products()[1] #PUT JASONS INVOICE CONTROLLER FUNCTION HERE
     for row, end in enumerate(data):
 
         idDato = QTableWidgetItem(end[0])
