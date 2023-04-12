@@ -46,7 +46,7 @@ def add_customer_id_to_invoices(customer_id):
 def get_most_recent_invoice_id_by_date():
     sql = f"SELECT invoice_id FROM invoices ORDER BY invoice_date DESC LIMIT 1;"
     return executeQueryAndReturnResultNOCOLUMNNAME(sql)[0][0]
-print(get_most_recent_invoice_id_by_date())
+#print(get_most_recent_invoice_id_by_date())
 
 def add_product_to_invoice_products(invoice_id,product_choice,quantity):
     sql = f"INSERT INTO invoice_products(invoice_id,product_id,product_quantity) VALUES ({invoice_id},{product_choice}, {quantity});"
