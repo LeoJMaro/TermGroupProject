@@ -157,7 +157,6 @@ def customer_display():
             customer_phone = phone_input.text()
             customer_email = email_input.text()
             customer_address = address_input.text()
-            print("worked")
             to_controller = add_customer(customer_first_name,customer_last_name,
                                          customer_phone,customer_email,customer_address)
         except Exception as e:
@@ -243,7 +242,6 @@ def point_of_sale_display():
 
         product_name = product_combobox.currentText()
         info = get_price_with_product_name(product_name)
-        #print(info)
         price = str(f"List Price: ${info[11:16]} ea")
         price_label.setText(price)
 
@@ -277,7 +275,6 @@ def point_of_sale_display():
             customer_id = customer_id_label.text()
             id_to_controller = add_customer_id_to_invoices(int(customer_id))
             invoice_id = get_most_recent_invoice_id_by_date()
-            print(invoice_id)
 
         except Exception as e:
             feedback_label.setText(str(e))
@@ -296,7 +293,6 @@ def point_of_sale_display():
                 quantity = quantity_line_edit.text()
 
                 product_id = get_product_id(product_choice)
-                #print(product_id)
                 product_info_to_controller = add_product_to_invoice_products(invoice_id,product_id,quantity)
 
                 # SHOULD BE A COUNT OF HOW MANY TIMES A PRODUCT ID WITH A SPECIFIED INVOICE ID IS PRESENT FOR
