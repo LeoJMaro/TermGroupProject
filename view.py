@@ -31,6 +31,47 @@ invoice_window.setStyleSheet("background:black;")
 
 grid = QGridLayout()
 
+def homepage():
+
+    button_inventory = QPushButton("Inventory")
+    button_inventory.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    button_inventory.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["inventory"] = button_inventory
+    grid.addWidget(button_inventory, 0, 0)
+    button_inventory.clicked.connect(inventory_page)
+
+    Transaction = QPushButton("Transaction")
+    Transaction.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    Transaction.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["Transaction"] = Transaction
+    grid.addWidget(Transaction, 1, 0)
+    Transaction.clicked.connect(point_of_sale_display)
+
+    customer = QPushButton("Customer")
+    customer.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+    customer.setStyleSheet("border: 4px solid white;" + "color:white;")
+    widgets["buttons"]["customer"] = customer
+    grid.addWidget(customer, 2, 0)
+    customer.clicked.connect(customer_display)
+def inventory_page():
+    window.setWindowTitle("Inventory")
+    table = QTableWidget()
+    table.height()
+    table.width()
+    grid.addWidget(table, 0, 0)
+    table.setColumnCount(6)
+    data = controller.show_products()[1]
+    for row, end in enumerate(data):
+
+        idDato = QTableWidgetItem(end[0])
+        idDato.setTextAlignment(4)
+        table.insertRow(row)
+        table.setItem(row, 0, idDato)
+        table.setItem(row, 1, QTableWidgetItem(str(end[1])))
+        table.setItem(row, 2, QTableWidgetItem(str(end[2])))
+        table.setItem(row, 3, QTableWidgetItem(str(end[3])))
+        table.setItem(row, 4, QTableWidgetItem(str(end[4])))
+        table.setItem(row, 5, QTableWidgetItem(str(end[5])))
 
 def customer_display(): #function that sets all the lables, buttons, line edits in place
                                            # Window title and title, background color
@@ -40,42 +81,43 @@ def customer_display(): #function that sets all the lables, buttons, line edits 
     grid.addWidget(title,0,1)
                                             #Label and input for customer_first_name
     first_name_label = QLabel('First Name')
-    first_name_label.setStyleSheet("color: white;")
+    first_name_label.setStyleSheet("color: white;"+"max-width: 150px")
     grid.addWidget(first_name_label,1,0)
     first_name_input = QLineEdit()
-    first_name_input.setStyleSheet("background: white;")
+    first_name_input.setStyleSheet("background: white;"+"max-width: 150px")
     grid.addWidget(first_name_input, 1, 1)
                                             #Label and input for customer_last_name
     last_name_label = QLabel('Last Name')
-    last_name_label.setStyleSheet("color: white;")
+    last_name_label.setStyleSheet("color: white;"+"max-width: 150px")
     grid.addWidget(last_name_label, 2, 0)
     last_name_input = QLineEdit()
-    last_name_input.setStyleSheet("background: white;")
+    last_name_input.setStyleSheet("background: white;"+"max-width: 150px")
     grid.addWidget(last_name_input, 2, 1)
                                             #Label and input for customer_phone
     phone_label = QLabel('Phone Number')
-    phone_label.setStyleSheet("color: white;")
+    phone_label.setStyleSheet("color: white;"+"max-width: 150px")
     grid.addWidget(phone_label, 3, 0)
     phone_input = QLineEdit()
-    phone_input.setStyleSheet("background: white;")
+    phone_input.setStyleSheet("background: white;"+"max-width: 150px")
     grid.addWidget(phone_input, 3, 1)
                                             # Label and input for customer_email
     email_label = QLabel('Email')
-    email_label.setStyleSheet("color: white;")
+    email_label.setStyleSheet("color: white;"+"max-width: 150px")
     grid.addWidget(email_label, 4, 0)
     email_input = QLineEdit()
-    email_input.setStyleSheet("background: white;")
+    email_input.setStyleSheet("background: white;"+"max-width: 150px")
     grid.addWidget(email_input, 4, 1)
                                             # Label and input for customer_address
     address_label = QLabel('Address')
-    address_label.setStyleSheet("color: white;")
+    address_label.setStyleSheet("color: white;"+"max-width: 150px")
     grid.addWidget(address_label, 5, 0)
     address_input = QLineEdit()
-    address_input.setStyleSheet("background: white;")
+    address_input.setStyleSheet("background: white;"+"max-width: 150px")
     grid.addWidget(address_input, 5, 1)
                                             #Button adds info from gui inputs to customer_table when clicked
     add_button = QPushButton('Add Customer')
-    add_button.setStyleSheet("background: white;")
+    add_button.setStyleSheet("background: white;"+"max-width: 100px")
+    add_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
     grid.addWidget(add_button,6,1)
                                             #Label that confirms wheather add has worked or not
     feedback_label = QLabel()
@@ -197,7 +239,7 @@ def point_of_sale_display():#Function that sets all labels, and combo boxes in p
     add_product_id_to_invoice_products_button.setStyleSheet("background-color: white;")
                                                             #Label that carries either confirmation of item added or an error code
     feedback_label = QLabel()
-    feedback_label.setStyleSheet("color:white;")
+    feedback_label.setStyleSheet("color:white;"+"colspan: 4")
     grid.addWidget(feedback_label, 3, 2)
 
 
@@ -227,14 +269,13 @@ def point_of_sale_display():#Function that sets all labels, and combo boxes in p
                 #print(product_id)
                 product_info_to_controller = add_product_to_invoice_products(invoice_id,product_id,quantity)
 
- #SHOULD BE A COUNT OF HOW MANY TIMES A PRODUCT ID WITH A SPECIFIED INVOICE ID IS PRESENT FOR QUANTITY PURPOSES
             except Exception as e:
                 feedback_label.setText(str(e))
             else:
                 if product_info_to_controller == 1:
-                    feedback_label.setText("Successfully Added")
+                    feedback_label.setText(f"{product_choice} Successfully Added")
                 else:
-                    feedback_label.setText("Failed to Add")
+                    feedback_label.setText(f"{product_choice}Failed to Add")
 
         add_product_id_to_invoice_products_button.clicked.connect(add_product_to_invoice)
     add_customer_id_to_invoices_button.clicked.connect(add_customer_to_invoices)
@@ -270,48 +311,6 @@ def invoice_display():
 
 
 
-
-
-def homepage():
-
-    button_inventory = QPushButton("Inventory")
-    button_inventory.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-    button_inventory.setStyleSheet("border: 4px solid white;" + "color:white;")
-    widgets["buttons"]["inventory"] = button_inventory
-    grid.addWidget(button_inventory, 0, 0)
-    button_inventory.clicked.connect(inventory_page)
-
-    Transaction = QPushButton("Transaction")
-    Transaction.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-    Transaction.setStyleSheet("border: 4px solid white;" + "color:white;")
-    widgets["buttons"]["Transaction"] = Transaction
-    grid.addWidget(Transaction, 1, 0)
-    Transaction.clicked.connect(point_of_sale_display)
-
-    customer = QPushButton("customer")
-    customer.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-    customer.setStyleSheet("border: 4px solid white;" + "color:white;")
-    widgets["buttons"]["customer"] = customer
-    grid.addWidget(customer, 2, 0)
-    customer.clicked.connect(customer_display)
-def inventory_page():
-    table = QTableWidget()
-    table.height()
-    table.width()
-    grid.addWidget(table, 0, 0)
-    table.setColumnCount(6)
-    data = controller.show_products()[1]
-    for row, end in enumerate(data):
-
-        idDato = QTableWidgetItem(end[0])
-        idDato.setTextAlignment(4)
-        table.insertRow(row)
-        table.setItem(row, 0, idDato)
-        table.setItem(row, 1, QTableWidgetItem(str(end[1])))
-        table.setItem(row, 2, QTableWidgetItem(str(end[2])))
-        table.setItem(row, 3, QTableWidgetItem(str(end[3])))
-        table.setItem(row, 4, QTableWidgetItem(str(end[4])))
-        table.setItem(row, 5, QTableWidgetItem(str(end[5])))
 
 homepage()
 #point_of_sale_display()
