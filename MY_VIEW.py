@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 
-class Window(QMainWindow):
+class HomepageWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.cams = None
@@ -14,50 +14,47 @@ class Window(QMainWindow):
         self.left = 100
         self.width = 680
         self.height = 500
-        self.InitUI()
+        self.initialize_windows()
 
-    def InitUI(self):
+    def initialize_windows(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.top, self.left, self.width, self.height)
         self.setWindowIcon(self.style().standardIcon(QStyle.SP_DirClosedIcon))
 
-        buttonWindow1 = QPushButton('View Products', self)
-        buttonWindow1.move(300, 100)
-        buttonWindow1.clicked.connect(self.buttonWindow1_onClick)
+        btn_view_products = QPushButton('View Products', self)
+        btn_view_products.move(300, 100)
+        btn_view_products.clicked.connect(self.btn_view_products_on_click)
 
-        buttonWindow2 = QPushButton('Add Customer', self)
-        buttonWindow2.move(300, 200)
-        buttonWindow2.clicked.connect(self.buttonWindow2_onClick)
+        btn_add_customer = QPushButton('Add Customer', self)
+        btn_add_customer.move(300, 200)
+        btn_add_customer.clicked.connect(self.btn_add_customer_on_click)
 
-        buttonWindow3 = QPushButton('Start Transaction', self)
-        buttonWindow3.move(300, 300)
-        buttonWindow3.clicked.connect(self.buttonWindow3_onClick)
+        btn_start_transaction = QPushButton('Start Transaction', self)
+        btn_start_transaction.move(300, 300)
+        btn_start_transaction.clicked.connect(self.btn_start_transaction_on_click)
 
         self.show()
 
-    def buttonWindow1_onClick(self):
-        self.statusBar().showMessage("Switched to show products")
-        self.cams = Window1()
+    def btn_view_products_on_click(self):
+        self.cams = ViewProductsWindow()
         self.cams.show()
         self.close()
 
-    def buttonWindow2_onClick(self):
-        self.statusBar().showMessage("Switched to add customers")
-        self.cams = Window2()
+    def btn_add_customer_on_click(self):
+        self.cams = AddCustomerWindow()
         self.cams.show()
         self.close()
 
-    def buttonWindow3_onClick(self):
-        self.statusBar().showMessage("Switched to window 3")
-        self.cams = Window3()
+    def btn_start_transaction_on_click(self):
+        self.cams = StartTransactionWindow()
         self.cams.show()
         self.close()
 
 
-class Window1(QWidget):
+class ViewProductsWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Window1')
+        self.setWindowTitle('View Products')
 
         self.cams = None
         self.top = 100
@@ -70,7 +67,7 @@ class Window1(QWidget):
         self.pushButton = QPushButton(self)
         self.pushButton.setText('Return to Homepage')
         self.pushButton.setGeometry(260, 450, 150, 30)
-        self.pushButton.clicked.connect(self.goMainWindow)
+        self.pushButton.clicked.connect(self.show_homepage)
 
         # create table view and set model
         self.table_view = QTableView()
@@ -88,7 +85,6 @@ class Window1(QWidget):
 
         self.model.insertRows(0, len(rows), QModelIndex())
 
-
         for row, data in enumerate(rows):
             self.model.setItem(row, 0, QStandardItem(rows[row][0]))
             self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
@@ -103,13 +99,13 @@ class Window1(QWidget):
         layout.addWidget(self.pushButton)
         self.setLayout(layout)
 
-    def goMainWindow(self):
-        self.cams = Window()
+    def show_homepage(self):
+        self.cams = HomepageWindow()
         self.cams.show()
         self.close()
 
 
-class Window2(QWidget):
+class AddCustomerWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Add Customer')
@@ -121,18 +117,18 @@ class Window2(QWidget):
         self.height = 500
         self.setGeometry(self.top, self.left, self.width, self.height)
 
-        #Return to home
+        # Return to home
         self.homeButton = QPushButton(self)
         self.homeButton.setText('Return to Homepage')
         self.homeButton.setGeometry(260, 450, 150, 30)
-        self.homeButton.clicked.connect(self.goMainWindow)
+        self.homeButton.clicked.connect(self.show_homepage)
 
         self.addCustomerButton = QPushButton(self)
         self.addCustomerButton.setText('Add Customer')
         self.addCustomerButton.setGeometry(260, 450, 150, 30)
-        self.addCustomerButton.clicked.connect(self.addCustomer)
+        self.addCustomerButton.clicked.connect(self.add_customer)
 
-        mainLayout = QVBoxLayout()
+        main_layout = QVBoxLayout()
 
         self.cus_fname = QLineEdit("", self)
         self.cus_lname = QLineEdit("", self)
@@ -143,45 +139,46 @@ class Window2(QWidget):
         fname_row = QHBoxLayout()
         fname_row.addWidget(QLabel("First Name: "))
         fname_row.addWidget(self.cus_fname)
-        mainLayout.addLayout(fname_row)
+        main_layout.addLayout(fname_row)
 
         lname_row = QHBoxLayout()
         lname_row.addWidget(QLabel("Last Name: "))
         lname_row.addWidget(self.cus_lname)
-        mainLayout.addLayout(lname_row)
+        main_layout.addLayout(lname_row)
 
         phone_row = QHBoxLayout()
         phone_row.addWidget(QLabel("Phone: "))
         phone_row.addWidget(self.cus_phone)
-        mainLayout.addLayout(phone_row)
+        main_layout.addLayout(phone_row)
 
         email_row = QHBoxLayout()
         email_row.addWidget(QLabel("Email: "))
         email_row.addWidget(self.cus_email)
-        mainLayout.addLayout(email_row)
+        main_layout.addLayout(email_row)
 
         address_row = QHBoxLayout()
         address_row.addWidget(QLabel("Address: "))
         address_row.addWidget(self.cus_address)
-        mainLayout.addLayout(address_row)
+        main_layout.addLayout(address_row)
 
-        mainLayout.addWidget(self.addCustomerButton)
-        mainLayout.addWidget(self.homeButton)
-        self.setLayout(mainLayout)
+        main_layout.addWidget(self.addCustomerButton)
+        main_layout.addWidget(self.homeButton)
+        self.setLayout(main_layout)
 
-    def goMainWindow(self):
-        self.cams = Window()
+    def show_homepage(self):
+        self.cams = HomepageWindow()
         self.cams.show()
         self.close()
 
-    def addCustomer(self):
-        add_customer(self.cus_fname.text(), self.cus_lname.text(), self.cus_phone.text(), self.cus_email.text(), self.cus_address.text())
+    def add_customer(self):
+        add_customer(self.cus_fname.text(), self.cus_lname.text(), self.cus_phone.text(), self.cus_email.text(),
+                     self.cus_address.text())
 
 
-class Window3(QWidget):
+class StartTransactionWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Window1')
+        self.setWindowTitle('Start Transaction')
 
         self.cams = None
         self.top = 100
@@ -190,17 +187,16 @@ class Window3(QWidget):
         self.height = 500
         self.setGeometry(self.top, self.left, self.width, self.height)
 
-        #Home Button
-        self.homeButton = QPushButton(self)
-        self.homeButton.setText('Return to Homepage')
-        self.homeButton.setGeometry(260, 450, 150, 30)
-        self.homeButton.clicked.connect(self.goMainWindow)
+        # Home Button
+        self.home_button = QPushButton(self)
+        self.home_button.setText('Return to Homepage')
+        self.home_button.setGeometry(260, 450, 150, 30)
+        self.home_button.clicked.connect(self.show_homepage)
 
-        mainLayout = QVBoxLayout()
+        main_layout = QVBoxLayout()
 
         self.cus_cbo = QComboBox()
         self.cus_button = QPushButton("Select Customer")
-
 
         self.cus_cbo.addItem('')
         row = get_customer_names()
@@ -231,21 +227,19 @@ class Window3(QWidget):
         choose_product_row.addWidget(self.prod_quantity_line)
         choose_product_row.addWidget(self.prod_button)
 
-        mainLayout.addLayout(choose_customer_row)
-        mainLayout.addLayout(choose_product_row)
-        mainLayout.addWidget(self.homeButton)
+        main_layout.addLayout(choose_customer_row)
+        main_layout.addLayout(choose_product_row)
+        main_layout.addWidget(self.home_button)
 
-        self.setLayout(mainLayout)
+        self.setLayout(main_layout)
 
-
-
-    def goMainWindow(self):
-        self.cams = Window()
+    def show_homepage(self):
+        self.cams = HomepageWindow()
         self.cams.show()
         self.close()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = Window()
+    ex = HomepageWindow()
     sys.exit(app.exec_())
