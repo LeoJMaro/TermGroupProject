@@ -54,7 +54,7 @@ class Window(QMainWindow):
         self.close()
 
 
-class Window1(QMainWindow):
+class Window1(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Window1')
@@ -71,6 +71,27 @@ class Window1(QMainWindow):
         self.pushButton.setText('Return to Homepage')
         self.pushButton.setGeometry(260, 450, 150, 30)
         self.pushButton.clicked.connect(self.goMainWindow)
+
+        # create table view and set model
+        self.table_view = QTableView()
+        self.model = QStandardItemModel()
+        self.table_view.setModel(self.model)
+
+        rows = show_products()[1]
+        print(rows)
+
+        self.model.insertRows(0, len(rows), QModelIndex())
+
+        self.model.setItem(0, 0, QStandardItem("Alice"))
+        for row, data in enumerate(rows):
+            self.model.setItem(row, 0, QStandardItem(rows[row][0]))
+            self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
+            self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
+
+        # add table view to layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.table_view)
+        self.setLayout(layout)
 
     def goMainWindow(self):
         self.cams = Window()
@@ -99,6 +120,8 @@ class Window2(QMainWindow):
         self.pushButton.setText('Return to Homepage')
         self.pushButton.setGeometry(260, 450, 150, 30)
         self.pushButton.clicked.connect(self.goMainWindow)
+
+
 
     def goMainWindow(self):
         self.cams = Window()
