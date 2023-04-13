@@ -83,9 +83,9 @@ def get_customer_by_name(customer_full_name):
     sql = f"SELECT * FROM customers WHERE CONCAT(customer_first_name, ' ', customer_last_name) = '{customer_full_name}';"
     return executeQueryAndReturnResult(sql)
 
-def get_most_recent_invoice_id_by_date():
-    sql = f"SELECT invoice_id FROM invoices ORDER BY invoice_date DESC LIMIT 1;"
-    return executeQueryAndReturnResult(sql)
+#def get_most_recent_invoice_id_by_date():
+ #   sql = f"SELECT invoice_id FROM invoices ORDER BY invoice_date DESC LIMIT 1;"
+ #   return executeQueryAndReturnResult(sql)
 
 
 def search_invoice_by_customer_id(customer_id):
