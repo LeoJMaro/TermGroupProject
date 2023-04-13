@@ -77,8 +77,14 @@ class Window1(QWidget):
         self.model = QStandardItemModel()
         self.table_view.setModel(self.model)
 
+        cols = show_products()[0]
+
+        self.model.setHorizontalHeaderLabels(cols)
+
+        for col in range(len(cols)):
+            self.table_view.setColumnWidth(col, 200)
+
         rows = show_products()[1]
-        print(rows)
 
         self.model.insertRows(0, len(rows), QModelIndex())
 
@@ -87,6 +93,9 @@ class Window1(QWidget):
             self.model.setItem(row, 0, QStandardItem(rows[row][0]))
             self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
             self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
+            self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
+            self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
+            self.model.setItem(row, 5, QStandardItem(f"{rows[row][5]}"))
 
         # add table view to layout
         layout = QVBoxLayout()
