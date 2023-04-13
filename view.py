@@ -17,7 +17,7 @@ widgets = {
 app = QApplication(sys.argv)
 
 window = QWidget()
-window.setWindowTitle("{Point of Sale")
+window.setWindowTitle("Homepage")
 window.setFixedWidth(1200)
 window.setFixedHeight(800)
 
@@ -54,14 +54,14 @@ def homepage():
     transaction = QPushButton("Transaction")
     transaction.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
     transaction.setStyleSheet("border: 4px solid white;" + "color:white;")
-    transaction.clicked.connect(point_of_sale_display)
+    transaction.clicked.connect(clear_widgets)
     transaction.clicked.connect(point_of_sale_display)
     widgets["transaction"].append(transaction)
 
     grid.addWidget(widgets["transaction"][-1], 1, 0)
     transaction.clicked.connect(point_of_sale_display)
 
-    customer = QPushButton("customer")
+    customer = QPushButton("Customer")
     customer.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
     customer.setStyleSheet("border: 4px solid white;" + "color:white;")
     customer.style()
