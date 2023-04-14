@@ -92,6 +92,10 @@ def show_products():
     sql = "SELECT * FROM products"
     return executeQueryAndReturnResult(sql)
 
+def show_out_of_stock_products():
+    sql = "SELECT * FROM products WHERE inventory_stock < 1"
+    return executeQueryAndReturnResult(sql)
+
 
 def get_customer_by_name(customer_full_name):
     sql = f"SELECT * FROM customers WHERE CONCAT(customer_first_name, ' ', customer_last_name) = '{customer_full_name}';"

@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 
-class HomepageWindow(QMainWindow):
+class HomepageWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.cams = None
@@ -25,6 +25,10 @@ class HomepageWindow(QMainWindow):
         btn_view_products.move(300, 100)
         btn_view_products.clicked.connect(self.btn_view_products_on_click)
 
+        btn_view_oos_products = QPushButton('View Out of Stock Products', self)
+        btn_view_oos_products.move(200, 100)
+        btn_view_oos_products.clicked.connect(self.btn_view_out_of_stock_products_on_click)
+
         btn_add_customer = QPushButton('Add Customer', self)
         btn_add_customer.move(300, 200)
         btn_add_customer.clicked.connect(self.btn_add_customer_on_click)
@@ -33,10 +37,23 @@ class HomepageWindow(QMainWindow):
         btn_start_transaction.move(300, 300)
         btn_start_transaction.clicked.connect(self.btn_start_transaction_on_click)
 
+        main_layout = QVBoxLayout()
+        main_layout.addWidget(btn_view_products)
+        main_layout.addWidget(btn_view_oos_products)
+        main_layout.addWidget(btn_add_customer)
+        main_layout.addWidget(btn_start_transaction)
+
+        self.setLayout(main_layout)
+
         self.show()
 
     def btn_view_products_on_click(self):
         self.cams = ViewProductsWindow()
+        self.cams.show()
+        self.close()
+
+    def btn_view_out_of_stock_products_on_click(self):
+        self.cams = ViewOOSProductsWindow()
         self.cams.show()
         self.close()
 
@@ -82,6 +99,60 @@ class ViewProductsWindow(QWidget):
             self.table_view.setColumnWidth(col, 200)
 
         rows = show_products()[1]
+
+        self.model.insertRows(0, len(rows), QModelIndex())
+
+        for row, data in enumerate(rows):
+            self.model.setItem(row, 0, QStandardItem(rows[row][0]))
+            self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
+            self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
+            self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
+            self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
+            self.model.setItem(row, 5, QStandardItem(f"{rows[row][5]}"))
+
+        # add table view to layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.table_view)
+        layout.addWidget(self.pushButton)
+        self.setLayout(layout)
+
+    def show_homepage(self):
+        self.cams = HomepageWindow()
+        self.cams.show()
+        self.close()
+
+
+class ViewOOSProductsWindow(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('View Out of Stock Products')
+
+        self.cams = None
+        self.top = 100
+        self.left = 100
+        self.width = 680
+        self.height = 500
+        self.setGeometry(self.top, self.left, self.width, self.height)
+
+        # Return Button
+        self.pushButton = QPushButton(self)
+        self.pushButton.setText('Return to Homepage')
+        self.pushButton.setGeometry(260, 450, 150, 30)
+        self.pushButton.clicked.connect(self.show_homepage)
+
+        # create table view and set model
+        self.table_view = QTableView()
+        self.model = QStandardItemModel()
+        self.table_view.setModel(self.model)
+
+        cols = show_out_of_stock_products()[0]
+
+        self.model.setHorizontalHeaderLabels(cols)
+
+        for col in range(len(cols)):
+            self.table_view.setColumnWidth(col, 200)
+
+        rows = show_out_of_stock_products()[1]
 
         self.model.insertRows(0, len(rows), QModelIndex())
 
@@ -234,8 +305,6 @@ class StartTransactionWindow(QWidget):
         choose_product_row.addWidget(self.prod_cbo)
         choose_product_row.addWidget(self.prod_quantity_line)
         choose_product_row.addWidget(self.prod_button)
-
-
 
         main_layout.addLayout(choose_customer_row)
         main_layout.addLayout(choose_product_row)
