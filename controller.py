@@ -32,6 +32,9 @@ def get_customer_names():
     sql = f"SELECT concat(customer_first_name,' ', customer_last_name) as customer_full_name FROM pgp.customers;"
     return executeQueryAndReturnResult(sql)
 
+def get_customers_last_month():
+    sql = f"SELECT customers.customer_id AS 'Customer ID', customer_first_name AS 'First Name', customer_last_name AS 'Last Name', Max(invoice_date) AS 'Date of Last Activity' FROM customers JOIN invoices ON customers.customer_id = invoices.customer_id GROUP BY customers.customer_id, customer_first_name HAVING MAX(invoice_date) > NOW() - INTERVAL 1 MONTH;"
+    return executeQueryAndReturnResult(sql)
 
 def get_product_names():
     sql = f"SELECT product_name FROM pgp.products;"

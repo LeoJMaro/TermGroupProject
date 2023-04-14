@@ -22,24 +22,24 @@ class HomepageWindow(QWidget):
         self.setWindowIcon(self.style().standardIcon(QStyle.SP_DirClosedIcon))
 
         btn_view_products = QPushButton('View Products', self)
-        btn_view_products.move(300, 100)
         btn_view_products.clicked.connect(self.btn_view_products_on_click)
 
         btn_view_oos_products = QPushButton('View Out of Stock Products', self)
-        btn_view_oos_products.move(200, 100)
         btn_view_oos_products.clicked.connect(self.btn_view_out_of_stock_products_on_click)
 
+        btn_view_recent_customers = QPushButton('View Customers Active in the Last Month', self)
+        btn_view_recent_customers.clicked.connect(self.btn_view_recent_customers_on_click)
+
         btn_add_customer = QPushButton('Add Customer', self)
-        btn_add_customer.move(300, 200)
         btn_add_customer.clicked.connect(self.btn_add_customer_on_click)
 
         btn_start_transaction = QPushButton('Start Transaction', self)
-        btn_start_transaction.move(300, 300)
         btn_start_transaction.clicked.connect(self.btn_start_transaction_on_click)
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(btn_view_products)
         main_layout.addWidget(btn_view_oos_products)
+        main_layout.addWidget(btn_view_recent_customers)
         main_layout.addWidget(btn_add_customer)
         main_layout.addWidget(btn_start_transaction)
 
@@ -54,6 +54,11 @@ class HomepageWindow(QWidget):
 
     def btn_view_out_of_stock_products_on_click(self):
         self.cams = ViewOOSProductsWindow()
+        self.cams.show()
+        self.close()
+
+    def btn_view_recent_customers_on_click(self):
+        self.cams = ViewRecentCustomers()
         self.cams.show()
         self.close()
 
@@ -165,6 +170,58 @@ class ViewOOSProductsWindow(QWidget):
             self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
             self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
             self.model.setItem(row, 5, QStandardItem(f"{rows[row][5]}"))
+
+        # add table view to layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.table_view)
+        layout.addWidget(self.pushButton)
+        self.setLayout(layout)
+
+    def show_homepage(self):
+        self.cams = HomepageWindow()
+        self.cams.show()
+        self.close()
+
+class ViewRecentCustomers(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('View Recent Customers')
+
+        self.cams = None
+        self.top = 100
+        self.left = 100
+        self.width = 680
+        self.height = 500
+        self.setGeometry(self.top, self.left, self.width, self.height)
+
+        # Return Button
+        self.pushButton = QPushButton(self)
+        self.pushButton.setText('Return to Homepage')
+        self.pushButton.setGeometry(260, 450, 150, 30)
+        self.pushButton.clicked.connect(self.show_homepage)
+
+        # create table view and set model
+        self.table_view = QTableView()
+        self.model = QStandardItemModel()
+        self.table_view.setModel(self.model)
+
+        cols = get_customers_last_month()[0]
+
+        self.model.setHorizontalHeaderLabels(cols)
+        self.table_view.verticalHeader().setVisible(False)
+
+        for col in range(len(cols)):
+            self.table_view.setColumnWidth(col, 200)
+
+        rows = get_customers_last_month()[1]
+
+        self.model.insertRows(0, len(rows), QModelIndex())
+
+        for row, data in enumerate(rows):
+            self.model.setItem(row, 0, QStandardItem(f"{rows[row][0]}"))
+            self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
+            self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
+            self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
 
         # add table view to layout
         layout = QVBoxLayout()
