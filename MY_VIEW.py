@@ -94,6 +94,7 @@ class ViewProductsWindow(QWidget):
         cols = show_products()[0]
 
         self.model.setHorizontalHeaderLabels(cols)
+        self.table_view.verticalHeader().setVisible(False)
 
         for col in range(len(cols)):
             self.table_view.setColumnWidth(col, 200)
@@ -103,7 +104,7 @@ class ViewProductsWindow(QWidget):
         self.model.insertRows(0, len(rows), QModelIndex())
 
         for row, data in enumerate(rows):
-            self.model.setItem(row, 0, QStandardItem(rows[row][0]))
+            self.model.setItem(row, 0, QStandardItem(f"{rows[row][0]}"))
             self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
             self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
             self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
@@ -148,6 +149,7 @@ class ViewOOSProductsWindow(QWidget):
         cols = show_out_of_stock_products()[0]
 
         self.model.setHorizontalHeaderLabels(cols)
+        self.table_view.verticalHeader().setVisible(False)
 
         for col in range(len(cols)):
             self.table_view.setColumnWidth(col, 200)
@@ -157,7 +159,7 @@ class ViewOOSProductsWindow(QWidget):
         self.model.insertRows(0, len(rows), QModelIndex())
 
         for row, data in enumerate(rows):
-            self.model.setItem(row, 0, QStandardItem(rows[row][0]))
+            self.model.setItem(row, 0, QStandardItem(f"{rows[row][0]}"))
             self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
             self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
             self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
