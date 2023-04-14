@@ -273,6 +273,10 @@ class AddCustomerWindow(QWidget):
         self.addCustomerButton.setGeometry(260, 450, 150, 30)
         self.addCustomerButton.clicked.connect(self.add_customer)
 
+        self.lbl_output = QLabel("")
+        self.lbl_output.setAlignment(Qt.AlignCenter)
+        self.lbl_output.setMaximumHeight(30)
+
         main_layout = QVBoxLayout()
 
         self.cus_first_name = QLineEdit("", self)
@@ -309,8 +313,12 @@ class AddCustomerWindow(QWidget):
         address_row.addWidget(self.cus_address)
         main_layout.addLayout(address_row)
 
-        main_layout.addWidget(self.addCustomerButton)
-        main_layout.addWidget(self.homeButton)
+        button_col = QVBoxLayout()
+        button_col.addWidget(self.lbl_output)
+        button_col.addWidget(self.addCustomerButton)
+        button_col.addWidget(self.homeButton)
+        main_layout.addLayout(button_col)
+
         self.setLayout(main_layout)
 
     def show_homepage(self):
@@ -321,6 +329,8 @@ class AddCustomerWindow(QWidget):
     def add_customer(self):
         add_customer(self.cus_first_name.text(), self.cus_last_name.text(), self.cus_phone.text(),
                      self.cus_email.text(), self.cus_address.text())
+        self.lbl_output.setText(f"Successfully added {self.cus_first_name.text()}")
+
 
 
 class StartTransactionWindow(QWidget):
@@ -341,9 +351,11 @@ class StartTransactionWindow(QWidget):
         # Home Button
         self.home_button = QPushButton(self)
         self.home_button.setText('Return to Homepage')
-
-
         self.home_button.clicked.connect(self.show_homepage)
+
+        self.lbl_output = QLabel("")
+        self.lbl_output.setAlignment(Qt.AlignCenter)
+        self.lbl_output.setMaximumHeight(30)
 
         main_layout = QVBoxLayout()
 
@@ -397,6 +409,8 @@ class StartTransactionWindow(QWidget):
 
         main_layout.addLayout(choose_customer_row)
         main_layout.addLayout(choose_product_row)
+
+        main_layout.addWidget(self.lbl_output)
         main_layout.addWidget(self.btn_complete_invoice)
         main_layout.addWidget(self.btn_show_invoice)
 
@@ -422,6 +436,8 @@ class StartTransactionWindow(QWidget):
         self.cus_cbo.setEnabled(False)
         self.cus_button.setEnabled(False)
 
+        self.lbl_output.setText(f"Transaction started for {self.cus_cbo.currentText()}")
+
     def select_product_on_click(self):
         prod_id = get_product_id(self.prod_cbo.currentText())
         if self.prod_quantity_line.text() == '':
@@ -432,10 +448,11 @@ class StartTransactionWindow(QWidget):
             current_inventory_count = get_product_quantity_by_id(prod_id)[0][1]
             print(current_inventory_count)
             if current_inventory_count < int(self.prod_quantity_line.text()):
-                print('Product oos!')
+                self.lbl_output.setText(f"{self.prod_cbo.currentText()} is currently out of stock and cannot be added")
             else:
                 add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
                 decrease_inventory(self.prod_quantity_line.text(), prod_id)
+                self.lbl_output.setText(f"{self.prod_quantity_line.text()}x {self.prod_cbo.currentText()} Added to Transaction")
 
     def btn_complete_invoice_on_click(self):
         self.btn_complete_invoice.setEnabled(False)
@@ -443,6 +460,7 @@ class StartTransactionWindow(QWidget):
         self.prod_button.setEnabled(False)
         self.prod_quantity_line.setEnabled(False)
         self.btn_show_invoice.setEnabled(True)
+        self.lbl_output.setText(f"Transaction Closed for {self.cus_cbo.currentText()}, Invoice Generated")
 
     def btn_show_invoice_on_click(self):
         self.cams = ViewCurrentInvoiceWindow(self.current_invoice_id)
