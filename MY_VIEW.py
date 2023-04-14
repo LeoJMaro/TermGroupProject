@@ -216,6 +216,12 @@ class StartTransactionWindow(QWidget):
         self.prod_cbo = QComboBox()
         self.prod_button = QPushButton("Add Product ")
         self.prod_button.clicked.connect(self.select_product_on_click)
+        self.prod_quantity_line = QLineEdit()
+        self.prod_quantity_line.setFixedWidth(50)
+
+        self.prod_cbo.setEnabled(False)
+        self.prod_button.setEnabled(False)
+        self.prod_quantity_line.setEnabled(False)
 
         self.prod_cbo.addItem('')
         row = get_product_names()
@@ -223,14 +229,13 @@ class StartTransactionWindow(QWidget):
             data = str(i[0])
             self.prod_cbo.addItem(data)
 
-        self.prod_quantity_line = QLineEdit()
-        self.prod_quantity_line.setFixedWidth(50)
-
         choose_product_row = QHBoxLayout()
         choose_product_row.addWidget(QLabel("Product: "))
         choose_product_row.addWidget(self.prod_cbo)
         choose_product_row.addWidget(self.prod_quantity_line)
         choose_product_row.addWidget(self.prod_button)
+
+
 
         main_layout.addLayout(choose_customer_row)
         main_layout.addLayout(choose_product_row)
@@ -244,19 +249,26 @@ class StartTransactionWindow(QWidget):
         self.close()
 
     def select_customer_on_click(self):
+        self.prod_cbo.setEnabled(True)
+        self.prod_button.setEnabled(True)
+        self.prod_quantity_line.setEnabled(True)
         cus_id = get_customer_by_name(self.cus_cbo.currentText())[1][0][0]
         self.current_customer_id = cus_id
         add_invoice(cus_id, 'NOW()')
         self.current_invoice_id = get_most_recent_invoice_id_by_date()
+        self.cus_cbo.setEnabled(False)
+        self.cus_button.setEnabled(False)
 
     def select_product_on_click(self):
         prod_id = get_product_id(self.prod_cbo.currentText())
-        print(prod_id)
-        print(self.current_invoice_id)
-        if self.prod_quantity_line.text() == "":
-            self.prod_quantity_line.setText(1)
-        print(self.prod_quantity_line.text())
-        add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
+        if self.prod_quantity_line.text() == '':
+            self.prod_quantity_line.setText('1')
+            print(check_if_invoice_product_exists(self.current_invoice_id, prod_id))
+        if check_if_invoice_product_exists(self.current_invoice_id, prod_id):
+            print("duped shovel")
+            increase_invoice_product_inventory(self.prod_quantity_line.text(), self.current_invoice_id, prod_id)
+        else:
+            add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
 
 
 if __name__ == '__main__':
