@@ -79,7 +79,7 @@ def increase_invoice_product_inventory(intake_amount,invoice_id, product_id):
 
 
 def decrease_inventory(purchase_amount, product_id):
-    sql = f"UPDATE programming_group_project.products SET inventory_stock = inventory_stock - {purchase_amount} WHERE product_id = {product_id};"
+    sql = f"UPDATE pgp.products SET inventory_stock = inventory_stock - {purchase_amount} WHERE product_id = {product_id};"
     return executeQueryAndCommit(sql)
 
 

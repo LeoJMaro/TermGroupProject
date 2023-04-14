@@ -263,12 +263,11 @@ class StartTransactionWindow(QWidget):
         prod_id = get_product_id(self.prod_cbo.currentText())
         if self.prod_quantity_line.text() == '':
             self.prod_quantity_line.setText('1')
-            print(check_if_invoice_product_exists(self.current_invoice_id, prod_id))
         if check_if_invoice_product_exists(self.current_invoice_id, prod_id):
-            print("duped shovel")
             increase_invoice_product_inventory(self.prod_quantity_line.text(), self.current_invoice_id, prod_id)
         else:
             add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
+            decrease_inventory(self.prod_quantity_line.text(), prod_id)
 
 
 if __name__ == '__main__':
