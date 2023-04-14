@@ -187,6 +187,9 @@ class StartTransactionWindow(QWidget):
         self.height = 500
         self.setGeometry(self.top, self.left, self.width, self.height)
 
+        self.current_invoice_id = None
+        self.current_customer_id = None
+
         # Home Button
         self.home_button = QPushButton(self)
         self.home_button.setText('Return to Homepage')
@@ -197,6 +200,7 @@ class StartTransactionWindow(QWidget):
 
         self.cus_cbo = QComboBox()
         self.cus_button = QPushButton("Select Customer")
+        self.cus_button.clicked.connect(self.select_customer_on_click)
 
         self.cus_cbo.addItem('')
         row = get_customer_names()
@@ -211,6 +215,7 @@ class StartTransactionWindow(QWidget):
 
         self.prod_cbo = QComboBox()
         self.prod_button = QPushButton("Add Product ")
+        self.prod_button.clicked.connect(self.select_product_on_click)
 
         self.prod_cbo.addItem('')
         row = get_product_names()
@@ -237,6 +242,21 @@ class StartTransactionWindow(QWidget):
         self.cams = HomepageWindow()
         self.cams.show()
         self.close()
+
+    def select_customer_on_click(self):
+        cus_id = get_customer_by_name(self.cus_cbo.currentText())[1][0][0]
+        self.current_customer_id = cus_id
+        add_invoice(cus_id, 'NOW()')
+        self.current_invoice_id = get_most_recent_invoice_id_by_date()
+
+    def select_product_on_click(self):
+        prod_id = get_product_id(self.prod_cbo.currentText())
+        print(prod_id)
+        print(self.current_invoice_id)
+        if self.prod_quantity_line.text() == "":
+            self.prod_quantity_line.setText(1)
+        print(self.prod_quantity_line.text())
+        add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
 
 
 if __name__ == '__main__':
