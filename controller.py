@@ -1,4 +1,4 @@
-from sql_functions import executeQueryAndCommit, executeQueryAndReturnResult, executeQueryAndReturnResultNOCOLUMNNAME
+from sql_functions import executeQueryAndCommit, executeQueryAndReturnResult, executeQueryAndReturnResultNoColumnName
 
 
 def add_invoice(customer_id, invoice_date):
@@ -24,7 +24,7 @@ def get_customer_by_name(customer_full_name):
 
 def get_customer_id_by_customer_name(customer_first_name, customer_last_name):
     sql = f"SELECT customer_id FROM pgp.customers WHERE customer_first_name = '{customer_first_name}' and customer_last_name = '{customer_last_name}';"
-    query = str(executeQueryAndReturnResultNOCOLUMNNAME(sql)[0])
+    query = str(executeQueryAndReturnResultNoColumnName(sql)[0])
     return query[1]
 
 
@@ -32,9 +32,11 @@ def get_customer_names():
     sql = f"SELECT concat(customer_first_name,' ', customer_last_name) as customer_full_name FROM pgp.customers;"
     return executeQueryAndReturnResult(sql)
 
+
 def get_customers_last_month():
     sql = f"SELECT customers.customer_id AS 'Customer ID', customer_first_name AS 'First Name', customer_last_name AS 'Last Name', Max(invoice_date) AS 'Date of Last Activity' FROM customers JOIN invoices ON customers.customer_id = invoices.customer_id GROUP BY customers.customer_id, customer_first_name HAVING MAX(invoice_date) > NOW() - INTERVAL 1 MONTH;"
     return executeQueryAndReturnResult(sql)
+
 
 def get_product_names():
     sql = f"SELECT product_name FROM pgp.products;"
@@ -43,7 +45,7 @@ def get_product_names():
 
 def get_price_with_product_name(product_name):
     sql = f"SELECT price FROM pgp.products WHERE product_name = '{product_name}';"
-    query = str(executeQueryAndReturnResultNOCOLUMNNAME(sql))
+    query = str(executeQueryAndReturnResultNoColumnName(sql))
     # print(query[11:16])
     return query
 
@@ -55,7 +57,7 @@ def add_customer_id_to_invoices(customer_id):
 
 def get_most_recent_invoice_id_by_date():
     sql = f"SELECT invoice_id FROM invoices ORDER BY invoice_date DESC LIMIT 1;"
-    return executeQueryAndReturnResultNOCOLUMNNAME(sql)[0][0]
+    return executeQueryAndReturnResultNoColumnName(sql)[0][0]
 
 
 def add_product_to_invoice_products(invoice_id, product_choice, quantity):
@@ -65,12 +67,13 @@ def add_product_to_invoice_products(invoice_id, product_choice, quantity):
 
 def get_product_id(product_choice):
     sql = f"SELECT product_id FROM pgp.products WHERE product_name = '{product_choice}';"
-    query = executeQueryAndReturnResultNOCOLUMNNAME(sql)[0][0]
+    query = executeQueryAndReturnResultNoColumnName(sql)[0][0]
     return query
+
 
 def get_product_quantity_by_id(product_id):
     sql = f"SELECT product_id, inventory_stock FROM pgp.products WHERE product_id = {product_id};"
-    return executeQueryAndReturnResultNOCOLUMNNAME(sql)
+    return executeQueryAndReturnResultNoColumnName(sql)
 
 
 # print(get_product_id("Risk"))
@@ -80,7 +83,8 @@ def increase_inventory(intake_amount, product_id):
     sql = f"UPDATE pgp.products SET inventory_stock = inventory_stock + {intake_amount} WHERE product_id = {product_id};"
     return executeQueryAndCommit(sql)
 
-def increase_invoice_product_inventory(intake_amount,invoice_id, product_id):
+
+def increase_invoice_product_inventory(intake_amount, invoice_id, product_id):
     sql = f"UPDATE pgp.invoice_products SET product_quantity = product_quantity + {intake_amount} WHERE invoice_id = {invoice_id} AND product_id = {product_id};"
     return executeQueryAndCommit(sql)
 
@@ -99,8 +103,14 @@ def show_products():
     sql = "SELECT * FROM products"
     return executeQueryAndReturnResult(sql)
 
+
 def show_out_of_stock_products():
     sql = "SELECT * FROM products WHERE inventory_stock < 1"
+    return executeQueryAndReturnResult(sql)
+
+
+def show_current_invoice(invoice_id):
+    sql = f"SELECT invoice_id, product_name, product_description, product_quantity, price FROM invoice_products ip JOIN products p ON ip.product_id = p.product_id WHERE invoice_id = {invoice_id};"
     return executeQueryAndReturnResult(sql)
 
 
@@ -115,11 +125,12 @@ def get_customer_by_name(customer_full_name):
 
 def check_if_invoice_product_exists(invoice_id, product_id):
     sql = f"SELECT * FROM pgp.invoice_products WHERE invoice_id = {invoice_id} AND product_id = {product_id}"
-    res = executeQueryAndReturnResultNOCOLUMNNAME(sql)
+    res = executeQueryAndReturnResultNoColumnName(sql)
     if len(res) >= 1:
         return True
     else:
         return False
+
 
 def get_invoice_by_customer_id(customer_id):
     sql = f"SELECT ip.invoice_id AS 'Invoice ID', SUM(ip.product_quantity * p.price) AS 'Total Cost' FROM invoice_products AS ip JOIN products AS p ON ip.product_id = p.product_id JOIN invoices AS i ON ip.invoice_id = i.invoice_id WHERE i.customer_id = {customer_id} GROUP BY ip.invoice_id;"
