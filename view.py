@@ -101,7 +101,6 @@ class ViewProductsWindow(QWidget):
         self.model.setHorizontalHeaderLabels(cols)
         self.table_view.verticalHeader().setVisible(False)
 
-
         for col in range(len(cols)):
             self.table_view.setColumnWidth(col, 200)
 
@@ -116,6 +115,10 @@ class ViewProductsWindow(QWidget):
             self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
             self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
             self.model.setItem(row, 5, QStandardItem(f"{rows[row][5]}"))
+
+            for col in range(len(cols)):
+                index = self.model.index(row, col, QModelIndex())
+                self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
 
         # add table view to layout
         layout = QVBoxLayout()
@@ -172,6 +175,11 @@ class ViewOOSProductsWindow(QWidget):
             self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
             self.model.setItem(row, 5, QStandardItem(f"{rows[row][5]}"))
 
+            for col in range(len(cols)):
+                index = self.model.index(row, col, QModelIndex())
+                self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
+
+
         # add table view to layout
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
@@ -182,6 +190,7 @@ class ViewOOSProductsWindow(QWidget):
         self.cams = HomepageWindow()
         self.cams.show()
         self.close()
+
 
 class ViewRecentCustomers(QWidget):
     def __init__(self, parent=None):
@@ -224,6 +233,11 @@ class ViewRecentCustomers(QWidget):
             self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
             self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
 
+            for col in range(len(cols)):
+                index = self.model.index(row, col, QModelIndex())
+                self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
+
+
         # add table view to layout
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
@@ -261,21 +275,24 @@ class AddCustomerWindow(QWidget):
 
         main_layout = QVBoxLayout()
 
-        self.cus_fname = QLineEdit("", self)
-        self.cus_lname = QLineEdit("", self)
+        self.cus_first_name = QLineEdit("", self)
+        self.cus_last_name = QLineEdit("", self)
+
         self.cus_phone = QLineEdit("", self)
         self.cus_email = QLineEdit("", self)
         self.cus_address = QLineEdit("", self)
 
-        fname_row = QHBoxLayout()
-        fname_row.addWidget(QLabel("First Name: "))
-        fname_row.addWidget(self.cus_fname)
-        main_layout.addLayout(fname_row)
 
-        lname_row = QHBoxLayout()
-        lname_row.addWidget(QLabel("Last Name: "))
-        lname_row.addWidget(self.cus_lname)
-        main_layout.addLayout(lname_row)
+        first_name_row = QHBoxLayout()
+        first_name_row.addWidget(QLabel("First Name: "))
+        first_name_row.addWidget(self.cus_first_name)
+        main_layout.addLayout(first_name_row)
+
+        last_name_row = QHBoxLayout()
+        last_name_row.addWidget(QLabel("Last Name: "))
+        last_name_row.addWidget(self.cus_last_name)
+        main_layout.addLayout(last_name_row)
+
 
         phone_row = QHBoxLayout()
         phone_row.addWidget(QLabel("Phone: "))
@@ -302,8 +319,8 @@ class AddCustomerWindow(QWidget):
         self.close()
 
     def add_customer(self):
-        add_customer(self.cus_fname.text(), self.cus_lname.text(), self.cus_phone.text(), self.cus_email.text(),
-                     self.cus_address.text())
+        add_customer(self.cus_first_name.text(), self.cus_last_name.text(), self.cus_phone.text(),
+                     self.cus_email.text(), self.cus_address.text())
 
 
 class StartTransactionWindow(QWidget):
@@ -324,7 +341,8 @@ class StartTransactionWindow(QWidget):
         # Home Button
         self.home_button = QPushButton(self)
         self.home_button.setText('Return to Homepage')
-        self.home_button.setGeometry(260, 450, 150, 30)
+
+
         self.home_button.clicked.connect(self.show_homepage)
 
         main_layout = QVBoxLayout()
@@ -366,8 +384,22 @@ class StartTransactionWindow(QWidget):
         choose_product_row.addWidget(self.prod_quantity_line)
         choose_product_row.addWidget(self.prod_button)
 
+
+        self.btn_complete_invoice = QPushButton(self)
+        self.btn_complete_invoice.setText('Complete Invoice')
+        self.btn_complete_invoice.clicked.connect(self.btn_complete_invoice_on_click)
+        self.btn_complete_invoice.setEnabled(False)
+
+        self.btn_show_invoice = QPushButton(self)
+        self.btn_show_invoice.setText('Show Invoice')
+        self.btn_show_invoice.clicked.connect(self.btn_show_invoice_on_click)
+        self.btn_show_invoice.setEnabled(False)
+
         main_layout.addLayout(choose_customer_row)
         main_layout.addLayout(choose_product_row)
+        main_layout.addWidget(self.btn_complete_invoice)
+        main_layout.addWidget(self.btn_show_invoice)
+
         main_layout.addWidget(self.home_button)
 
         self.setLayout(main_layout)
@@ -381,6 +413,8 @@ class StartTransactionWindow(QWidget):
         self.prod_cbo.setEnabled(True)
         self.prod_button.setEnabled(True)
         self.prod_quantity_line.setEnabled(True)
+        self.btn_complete_invoice.setEnabled(True)
+
         cus_id = get_customer_by_name(self.cus_cbo.currentText())[1][0][0]
         self.current_customer_id = cus_id
         add_invoice(cus_id, 'NOW()')
@@ -395,8 +429,84 @@ class StartTransactionWindow(QWidget):
         if check_if_invoice_product_exists(self.current_invoice_id, prod_id):
             increase_invoice_product_inventory(self.prod_quantity_line.text(), self.current_invoice_id, prod_id)
         else:
-            add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
-            decrease_inventory(self.prod_quantity_line.text(), prod_id)
+            current_inventory_count = get_product_quantity_by_id(prod_id)[0][1]
+            print(current_inventory_count)
+            if current_inventory_count < int(self.prod_quantity_line.text()):
+                print('Product oos!')
+            else:
+                add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
+                decrease_inventory(self.prod_quantity_line.text(), prod_id)
+
+    def btn_complete_invoice_on_click(self):
+        self.btn_complete_invoice.setEnabled(False)
+        self.prod_cbo.setEnabled(False)
+        self.prod_button.setEnabled(False)
+        self.prod_quantity_line.setEnabled(False)
+        self.btn_show_invoice.setEnabled(True)
+
+    def btn_show_invoice_on_click(self):
+        self.cams = ViewCurrentInvoiceWindow(self.current_invoice_id)
+        self.cams.show()
+
+
+class ViewCurrentInvoiceWindow(QWidget):
+    def __init__(self, current_invoice, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('View Current Invoice')
+
+        self.cams = None
+        self.top = 100
+        self.left = 100
+        self.width = 680
+        self.height = 500
+        self.setGeometry(self.top, self.left, self.width, self.height)
+
+        self.current_invoice_id = current_invoice
+
+        # Return Button
+        self.pushButton = QPushButton(self)
+        self.pushButton.setText('Close')
+        self.pushButton.setGeometry(260, 450, 150, 30)
+        self.pushButton.clicked.connect(self.show_homepage)
+
+        # create table view and set model
+        self.table_view = QTableView()
+        self.model = QStandardItemModel()
+        self.table_view.setModel(self.model)
+
+        cols = show_current_invoice(self.current_invoice_id)[0]
+
+        self.model.setHorizontalHeaderLabels(cols)
+
+        self.table_view.verticalHeader().setVisible(False)
+
+        for col in range(len(cols)):
+            self.table_view.setColumnWidth(col, 200)
+
+        rows = show_current_invoice(self.current_invoice_id)[1]
+
+        self.model.insertRows(0, len(rows), QModelIndex())
+
+        for row, data in enumerate(rows):
+            self.model.setItem(row, 0, QStandardItem(f"{rows[row][0]}"))
+            self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
+            self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
+            self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
+            self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
+
+            for col in range(len(cols)):
+                index = self.model.index(row, col, QModelIndex())
+                self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
+
+        # add table view to layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.table_view)
+        layout.addWidget(self.pushButton)
+        self.setLayout(layout)
+
+    def show_homepage(self):
+        self.close()
+
 
 
 if __name__ == '__main__':
