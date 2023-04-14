@@ -116,6 +116,11 @@ class ViewProductsWindow(QWidget):
             self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
             self.model.setItem(row, 5, QStandardItem(f"{rows[row][5]}"))
 
+            for col in range(len(cols)):
+                index = self.model.index(row, col, QModelIndex())
+                self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
+
+
         # add table view to layout
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
@@ -171,6 +176,10 @@ class ViewOOSProductsWindow(QWidget):
             self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
             self.model.setItem(row, 5, QStandardItem(f"{rows[row][5]}"))
 
+            for col in range(len(cols)):
+                index = self.model.index(row, col, QModelIndex())
+                self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
+
         # add table view to layout
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
@@ -181,6 +190,7 @@ class ViewOOSProductsWindow(QWidget):
         self.cams = HomepageWindow()
         self.cams.show()
         self.close()
+
 
 class ViewRecentCustomers(QWidget):
     def __init__(self, parent=None):
@@ -223,6 +233,10 @@ class ViewRecentCustomers(QWidget):
             self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
             self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
 
+            for col in range(len(cols)):
+                index = self.model.index(row, col, QModelIndex())
+                self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
+
         # add table view to layout
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
@@ -260,21 +274,21 @@ class AddCustomerWindow(QWidget):
 
         main_layout = QVBoxLayout()
 
-        self.cus_fname = QLineEdit("", self)
-        self.cus_lname = QLineEdit("", self)
+        self.cus_first_name = QLineEdit("", self)
+        self.cus_last_name = QLineEdit("", self)
         self.cus_phone = QLineEdit("", self)
         self.cus_email = QLineEdit("", self)
         self.cus_address = QLineEdit("", self)
 
-        fname_row = QHBoxLayout()
-        fname_row.addWidget(QLabel("First Name: "))
-        fname_row.addWidget(self.cus_fname)
-        main_layout.addLayout(fname_row)
+        first_name_row = QHBoxLayout()
+        first_name_row.addWidget(QLabel("First Name: "))
+        first_name_row.addWidget(self.cus_first_name)
+        main_layout.addLayout(first_name_row)
 
-        lname_row = QHBoxLayout()
-        lname_row.addWidget(QLabel("Last Name: "))
-        lname_row.addWidget(self.cus_lname)
-        main_layout.addLayout(lname_row)
+        last_name_row = QHBoxLayout()
+        last_name_row.addWidget(QLabel("Last Name: "))
+        last_name_row.addWidget(self.cus_last_name)
+        main_layout.addLayout(last_name_row)
 
         phone_row = QHBoxLayout()
         phone_row.addWidget(QLabel("Phone: "))
@@ -301,7 +315,7 @@ class AddCustomerWindow(QWidget):
         self.close()
 
     def add_customer(self):
-        add_customer(self.cus_fname.text(), self.cus_lname.text(), self.cus_phone.text(), self.cus_email.text(),
+        add_customer(self.cus_first_name.text(), self.cus_last_name.text(), self.cus_phone.text(), self.cus_email.text(),
                      self.cus_address.text())
 
 
@@ -323,7 +337,6 @@ class StartTransactionWindow(QWidget):
         # Home Button
         self.home_button = QPushButton(self)
         self.home_button.setText('Return to Homepage')
-        self.home_button.setGeometry(260, 450, 150, 30)
         self.home_button.clicked.connect(self.show_homepage)
 
         main_layout = QVBoxLayout()
@@ -394,8 +407,13 @@ class StartTransactionWindow(QWidget):
         if check_if_invoice_product_exists(self.current_invoice_id, prod_id):
             increase_invoice_product_inventory(self.prod_quantity_line.text(), self.current_invoice_id, prod_id)
         else:
-            add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
-            decrease_inventory(self.prod_quantity_line.text(), prod_id)
+            current_inventory_count = get_product_quantity_by_id(prod_id)[0][1]
+            print(current_inventory_count)
+            if current_inventory_count < int(self.prod_quantity_line.text()):
+                print('Product oos!')
+            else:
+                add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
+                decrease_inventory(self.prod_quantity_line.text(), prod_id)
 
 
 if __name__ == '__main__':
