@@ -68,6 +68,10 @@ def get_product_id(product_choice):
     query = executeQueryAndReturnResultNOCOLUMNNAME(sql)[0][0]
     return query
 
+def get_product_quantity_by_id(product_id):
+    sql = f"SELECT product_id, inventory_stock FROM pgp.products WHERE product_id = {product_id};"
+    return executeQueryAndReturnResultNOCOLUMNNAME(sql)
+
 
 # print(get_product_id("Risk"))
 
