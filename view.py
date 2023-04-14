@@ -179,6 +179,7 @@ class ViewOOSProductsWindow(QWidget):
                 index = self.model.index(row, col, QModelIndex())
                 self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
 
+
         # add table view to layout
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
@@ -236,6 +237,7 @@ class ViewRecentCustomers(QWidget):
                 index = self.model.index(row, col, QModelIndex())
                 self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
 
+
         # add table view to layout
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
@@ -275,9 +277,11 @@ class AddCustomerWindow(QWidget):
 
         self.cus_first_name = QLineEdit("", self)
         self.cus_last_name = QLineEdit("", self)
+
         self.cus_phone = QLineEdit("", self)
         self.cus_email = QLineEdit("", self)
         self.cus_address = QLineEdit("", self)
+
 
         first_name_row = QHBoxLayout()
         first_name_row.addWidget(QLabel("First Name: "))
@@ -288,6 +292,7 @@ class AddCustomerWindow(QWidget):
         last_name_row.addWidget(QLabel("Last Name: "))
         last_name_row.addWidget(self.cus_last_name)
         main_layout.addLayout(last_name_row)
+
 
         phone_row = QHBoxLayout()
         phone_row.addWidget(QLabel("Phone: "))
@@ -315,8 +320,7 @@ class AddCustomerWindow(QWidget):
 
     def add_customer(self):
         add_customer(self.cus_first_name.text(), self.cus_last_name.text(), self.cus_phone.text(),
-                     self.cus_email.text(),
-                     self.cus_address.text())
+                     self.cus_email.text(), self.cus_address.text())
 
 
 class StartTransactionWindow(QWidget):
@@ -337,6 +341,8 @@ class StartTransactionWindow(QWidget):
         # Home Button
         self.home_button = QPushButton(self)
         self.home_button.setText('Return to Homepage')
+
+
         self.home_button.clicked.connect(self.show_homepage)
 
         main_layout = QVBoxLayout()
@@ -378,6 +384,7 @@ class StartTransactionWindow(QWidget):
         choose_product_row.addWidget(self.prod_quantity_line)
         choose_product_row.addWidget(self.prod_button)
 
+
         self.btn_complete_invoice = QPushButton(self)
         self.btn_complete_invoice.setText('Complete Invoice')
         self.btn_complete_invoice.clicked.connect(self.btn_complete_invoice_on_click)
@@ -392,6 +399,7 @@ class StartTransactionWindow(QWidget):
         main_layout.addLayout(choose_product_row)
         main_layout.addWidget(self.btn_complete_invoice)
         main_layout.addWidget(self.btn_show_invoice)
+
         main_layout.addWidget(self.home_button)
 
         self.setLayout(main_layout)
@@ -406,6 +414,7 @@ class StartTransactionWindow(QWidget):
         self.prod_button.setEnabled(True)
         self.prod_quantity_line.setEnabled(True)
         self.btn_complete_invoice.setEnabled(True)
+
         cus_id = get_customer_by_name(self.cus_cbo.currentText())[1][0][0]
         self.current_customer_id = cus_id
         add_invoice(cus_id, 'NOW()')
@@ -499,7 +508,11 @@ class ViewCurrentInvoiceWindow(QWidget):
         self.close()
 
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    qss = "styles.qss"
+    with open(qss, "r") as fh:
+        app.setStyleSheet(fh.read())
     ex = HomepageWindow()
     sys.exit(app.exec_())
