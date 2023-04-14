@@ -1,0 +1,19 @@
+QWidget{
+    background-color: #f5e7b5;
+}
+QPushButton{
+    background-color:#fdc656;
+}
+
+QTableView{background-color:#fdc656;
+}
+QLineEdit{background-color:white;}
+QComboBox{
+background-color:white;}
+
+QHeaderView::section {
+    background-color: #694841;
+    color: white;}
+    QHeaderView {
+    background-color: #694841;
+    color: white;}
