@@ -424,35 +424,42 @@ class StartTransactionWindow(QWidget):
         self.close()
 
     def select_customer_on_click(self):
-        self.prod_cbo.setEnabled(True)
-        self.prod_button.setEnabled(True)
-        self.prod_quantity_line.setEnabled(True)
-        self.btn_complete_invoice.setEnabled(True)
+        if self.cus_cbo.currentText() == '':
+            self.lbl_output.setText('Customer choice cannot be empty!')
+        else:
+            self.prod_cbo.setEnabled(True)
+            self.prod_button.setEnabled(True)
+            self.prod_quantity_line.setEnabled(True)
+            self.btn_complete_invoice.setEnabled(True)
 
-        cus_id = get_customer_by_name(self.cus_cbo.currentText())[1][0][0]
-        self.current_customer_id = cus_id
-        add_invoice(cus_id, 'NOW()')
-        self.current_invoice_id = get_most_recent_invoice_id_by_date()
-        self.cus_cbo.setEnabled(False)
-        self.cus_button.setEnabled(False)
+            cus_id = get_customer_by_name(self.cus_cbo.currentText())[1][0][0]
+            self.current_customer_id = cus_id
+            add_invoice(cus_id, 'NOW()')
+            self.current_invoice_id = get_most_recent_invoice_id_by_date()
+            self.cus_cbo.setEnabled(False)
+            self.cus_button.setEnabled(False)
 
-        self.lbl_output.setText(f"Transaction started for {self.cus_cbo.currentText()}")
+            self.lbl_output.setText(f"Transaction started for {self.cus_cbo.currentText()}")
 
     def select_product_on_click(self):
-        prod_id = get_product_id(self.prod_cbo.currentText())
-        if self.prod_quantity_line.text() == '':
-            self.prod_quantity_line.setText('1')
-        if check_if_invoice_product_exists(self.current_invoice_id, prod_id):
-            increase_invoice_product_inventory(self.prod_quantity_line.text(), self.current_invoice_id, prod_id)
+        if self.prod_cbo.currentText() == '':
+            self.lbl_output.setText('Product choice cannot be empty!')
         else:
-            current_inventory_count = get_product_quantity_by_id(prod_id)[0][1]
-            print(current_inventory_count)
-            if current_inventory_count < int(self.prod_quantity_line.text()):
-                self.lbl_output.setText(f"{self.prod_cbo.currentText()} is currently out of stock and cannot be added")
+            prod_id = get_product_id(self.prod_cbo.currentText())
+            if self.prod_quantity_line.text() == '':
+                self.lbl_output.setText('Quantity choice cannot be empty!')
             else:
-                add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
-                decrease_inventory(self.prod_quantity_line.text(), prod_id)
-                self.lbl_output.setText(f"{self.prod_quantity_line.text()}x {self.prod_cbo.currentText()} Added to Transaction")
+                if check_if_invoice_product_exists(self.current_invoice_id, prod_id):
+                    increase_invoice_product_inventory(self.prod_quantity_line.text(), self.current_invoice_id, prod_id)
+                else:
+                    current_inventory_count = get_product_quantity_by_id(prod_id)[0][1]
+                    print(current_inventory_count)
+                    if current_inventory_count < int(self.prod_quantity_line.text()):
+                        self.lbl_output.setText(f"{self.prod_cbo.currentText()} is currently out of stock and cannot be added")
+                    else:
+                        add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
+                        decrease_inventory(self.prod_quantity_line.text(), prod_id)
+                        self.lbl_output.setText(f"{self.prod_quantity_line.text()}x {self.prod_cbo.currentText()} Added to Transaction")
 
     def btn_complete_invoice_on_click(self):
         self.btn_complete_invoice.setEnabled(False)
