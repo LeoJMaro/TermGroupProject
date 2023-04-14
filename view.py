@@ -273,6 +273,10 @@ class AddCustomerWindow(QWidget):
         self.addCustomerButton.setGeometry(260, 450, 150, 30)
         self.addCustomerButton.clicked.connect(self.add_customer)
 
+        self.lbl_output = QLabel("")
+        self.lbl_output.setAlignment(Qt.AlignCenter)
+        self.lbl_output.setMaximumHeight(30)
+
         main_layout = QVBoxLayout()
 
         self.cus_first_name = QLineEdit("", self)
@@ -309,8 +313,12 @@ class AddCustomerWindow(QWidget):
         address_row.addWidget(self.cus_address)
         main_layout.addLayout(address_row)
 
-        main_layout.addWidget(self.addCustomerButton)
-        main_layout.addWidget(self.homeButton)
+        button_col = QVBoxLayout()
+        button_col.addWidget(self.lbl_output)
+        button_col.addWidget(self.addCustomerButton)
+        button_col.addWidget(self.homeButton)
+        main_layout.addLayout(button_col)
+
         self.setLayout(main_layout)
 
     def show_homepage(self):
@@ -321,6 +329,8 @@ class AddCustomerWindow(QWidget):
     def add_customer(self):
         add_customer(self.cus_first_name.text(), self.cus_last_name.text(), self.cus_phone.text(),
                      self.cus_email.text(), self.cus_address.text())
+        self.lbl_output.setText(f"Successfully added {self.cus_first_name.text()}")
+
 
 
 class StartTransactionWindow(QWidget):
