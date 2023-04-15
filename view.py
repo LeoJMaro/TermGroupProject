@@ -9,7 +9,7 @@ class HomepageWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.cams = None
-        self.title = "App"
+        self.title = "Newfie Buddy's Board Game Emporium"
         self.top = 100
         self.left = 100
         self.width = 680
@@ -77,6 +77,7 @@ class ViewProductsWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('View Products')
+        self.setWindowIcon(self.style().standardIcon(QStyle.SP_DirClosedIcon))
 
         self.cams = None
         self.top = 100
@@ -136,6 +137,7 @@ class ViewOOSProductsWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('View Out of Stock Products')
+        self.setWindowIcon(self.style().standardIcon(QStyle.SP_DirClosedIcon))
 
         self.cams = None
         self.top = 100
@@ -179,7 +181,6 @@ class ViewOOSProductsWindow(QWidget):
                 index = self.model.index(row, col, QModelIndex())
                 self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
 
-
         # add table view to layout
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
@@ -196,6 +197,7 @@ class ViewRecentCustomers(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('View Recent Customers')
+        self.setWindowIcon(self.style().standardIcon(QStyle.SP_DirClosedIcon))
 
         self.cams = None
         self.top = 100
@@ -237,7 +239,6 @@ class ViewRecentCustomers(QWidget):
                 index = self.model.index(row, col, QModelIndex())
                 self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
 
-
         # add table view to layout
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
@@ -254,6 +255,7 @@ class AddCustomerWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Add Customer')
+        self.setWindowIcon(self.style().standardIcon(QStyle.SP_DirClosedIcon))
 
         self.cams = None
         self.top = 100
@@ -286,7 +288,6 @@ class AddCustomerWindow(QWidget):
         self.cus_email = QLineEdit("", self)
         self.cus_address = QLineEdit("", self)
 
-
         first_name_row = QHBoxLayout()
         first_name_row.addWidget(QLabel("First Name: "))
         first_name_row.addWidget(self.cus_first_name)
@@ -296,7 +297,6 @@ class AddCustomerWindow(QWidget):
         last_name_row.addWidget(QLabel("Last Name: "))
         last_name_row.addWidget(self.cus_last_name)
         main_layout.addLayout(last_name_row)
-
 
         phone_row = QHBoxLayout()
         phone_row.addWidget(QLabel("Phone: "))
@@ -332,11 +332,11 @@ class AddCustomerWindow(QWidget):
         self.lbl_output.setText(f"Successfully added {self.cus_first_name.text()}")
 
 
-
 class StartTransactionWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Start Transaction')
+        self.setWindowIcon(self.style().standardIcon(QStyle.SP_DirClosedIcon))
 
         self.cams = None
         self.top = 100
@@ -396,7 +396,6 @@ class StartTransactionWindow(QWidget):
         choose_product_row.addWidget(self.prod_quantity_line)
         choose_product_row.addWidget(self.prod_button)
 
-
         self.btn_complete_invoice = QPushButton(self)
         self.btn_complete_invoice.setText('Complete Invoice')
         self.btn_complete_invoice.clicked.connect(self.btn_complete_invoice_on_click)
@@ -455,11 +454,14 @@ class StartTransactionWindow(QWidget):
                     current_inventory_count = get_product_quantity_by_id(prod_id)[0][1]
                     print(current_inventory_count)
                     if current_inventory_count < int(self.prod_quantity_line.text()):
-                        self.lbl_output.setText(f"{self.prod_cbo.currentText()} is currently out of stock and cannot be added")
+                        self.lbl_output.setText(
+                            f"{self.prod_cbo.currentText()} is currently out of stock and cannot be added")
                     else:
-                        add_product_to_invoice_products(self.current_invoice_id, prod_id, self.prod_quantity_line.text())
+                        add_product_to_invoice_products(self.current_invoice_id, prod_id,
+                                                        self.prod_quantity_line.text())
                         decrease_inventory(self.prod_quantity_line.text(), prod_id)
-                        self.lbl_output.setText(f"{self.prod_quantity_line.text()}x {self.prod_cbo.currentText()} Added to Transaction")
+                        self.lbl_output.setText(
+                            f"{self.prod_quantity_line.text()}x {self.prod_cbo.currentText()} Added to Transaction")
 
     def btn_complete_invoice_on_click(self):
         self.btn_complete_invoice.setEnabled(False)
@@ -478,6 +480,7 @@ class ViewCurrentInvoiceWindow(QWidget):
     def __init__(self, current_invoice, parent=None):
         super().__init__(parent)
         self.setWindowTitle('View Current Invoice')
+        self.setWindowIcon(self.style().standardIcon(QStyle.SP_DirClosedIcon))
 
         self.cams = None
         self.top = 100
@@ -492,9 +495,9 @@ class ViewCurrentInvoiceWindow(QWidget):
         self.pushButton = QPushButton(self)
         self.pushButton.setText('Close')
         self.pushButton.setGeometry(260, 450, 150, 30)
-        self.pushButton.clicked.connect(self.show_homepage)
+        self.pushButton.clicked.connect(self.close_page)
 
-        # create table view and set model
+        # Create table view and set model
         self.table_view = QTableView()
         self.model = QStandardItemModel()
         self.table_view.setModel(self.model)
@@ -505,33 +508,44 @@ class ViewCurrentInvoiceWindow(QWidget):
 
         self.table_view.verticalHeader().setVisible(False)
 
+        # Set width of column cells
         for col in range(len(cols)):
             self.table_view.setColumnWidth(col, 200)
 
+        # Get row data
         rows = show_current_invoice(self.current_invoice_id)[1]
 
-        self.model.insertRows(0, len(rows), QModelIndex())
+        # Insert empty rows to be filled
+        self.model.insertRows(0, len(rows)+1, QModelIndex())
 
+        # Fill row cells  with data and center their text
         for row, data in enumerate(rows):
             self.model.setItem(row, 0, QStandardItem(f"{rows[row][0]}"))
             self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
             self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
             self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
-            self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
 
             for col in range(len(cols)):
                 index = self.model.index(row, col, QModelIndex())
                 self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
 
-        # add table view to layout
+        # Fill summary row data
+        self.model.setItem(len(rows), 0, QStandardItem("Total:"))
+        self.model.setItem(len(rows), 3, QStandardItem(f"{get_current_invoice_total(self.current_invoice_id)}"))
+        # Center align summary row text
+        index1 = self.model.index(len(rows), 0, QModelIndex())
+        self.model.setData(index1, Qt.AlignCenter, Qt.TextAlignmentRole)
+        index2 = self.model.index(len(rows), 3, QModelIndex())
+        self.model.setData(index2, Qt.AlignCenter, Qt.TextAlignmentRole)
+
+        # Create main layout and add widgets
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
         layout.addWidget(self.pushButton)
         self.setLayout(layout)
 
-    def show_homepage(self):
+    def close_page(self):
         self.close()
-
 
 
 if __name__ == '__main__':
