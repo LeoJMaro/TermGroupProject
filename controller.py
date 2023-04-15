@@ -168,12 +168,22 @@ def show_current_invoice(invoice_id):
 
 def get_current_invoice_total(invoice_id):
     """
-        Retrieves total price of the current invoice
-        :param invoice_id: (int) The ID of the invoice to retrieve price information for
-        :return: (float) sum of the price of all invoice products multiplied by their quantity
-        """
-    sql = f"SELECT SUM(price * product_quantity) AS 'Total' FROM invoice_products ip JOIN products p ON ip.product_id = p.product_id WHERE invoice_id = {invoice_id};"
+    Retrieves total price of the current invoice
+    :param invoice_id: (int) The ID of the invoice to retrieve price information for
+    :return: (float) sum of the price of all invoice products multiplied by their quantity
+    """
+    sql = f"SELECT SUM(price * product_quantity) AS 'Total Price' FROM invoice_products ip JOIN products p ON ip.product_id = p.product_id WHERE invoice_id = {invoice_id};"
     return executeQueryAndReturnResultNoColumnName(sql)[0][0]
+
+def get_current_invoice_quantity(invoice_id):
+    """
+        Retrieves total quantity of the current invoice
+        :param invoice_id: (int) The ID of the invoice to retrieve price information for
+        :return: (int) sum of the quantity of all invoice products
+        """
+    sql = f"SELECT SUM(product_quantity) AS 'Total Quantity' FROM invoice_products ip JOIN products p ON ip.product_id = p.product_id WHERE invoice_id = {invoice_id};"
+    return executeQueryAndReturnResultNoColumnName(sql)[0][0]
+
 
 
 def search_invoice_by_customer_id(customer_id):

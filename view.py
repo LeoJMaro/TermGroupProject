@@ -682,13 +682,16 @@ class ViewCurrentInvoiceWindow(QWidget):
 
         # Fill summary row data
         self.model.setItem(len(rows), 0, QStandardItem("Total:"))
+        self.model.setItem(len(rows), 2, QStandardItem(f"{get_current_invoice_quantity(self.current_invoice_id)}"))
         self.model.setItem(len(rows), 3, QStandardItem(f"{get_current_invoice_total(self.current_invoice_id)}"))
 
         # Center align summary row text
         index1 = self.model.index(len(rows), 0, QModelIndex())
         self.model.setData(index1, Qt.AlignCenter, Qt.TextAlignmentRole)
-        index2 = self.model.index(len(rows), 3, QModelIndex())
+        index2 = self.model.index(len(rows), 2, QModelIndex())
         self.model.setData(index2, Qt.AlignCenter, Qt.TextAlignmentRole)
+        index3 = self.model.index(len(rows), 3, QModelIndex())
+        self.model.setData(index3, Qt.AlignCenter, Qt.TextAlignmentRole)
 
         # Create main layout and add widgets
         layout = QVBoxLayout()
