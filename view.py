@@ -49,14 +49,28 @@ class HomepageWindow(QWidget):
         btn_add_stock = QPushButton('Add Stock', self)
         btn_add_stock.clicked.connect(self.btn_add_stock_on_click)
 
-        # Create main layout and add buttons to it
+        # Create labels
+        lbl_title = QLabel("Newfie Buddy's Board Game Emporium")
+        lbl_title.setFont(QFont('Comic Sans MS', 20))
+        lbl_title.setAlignment(Qt.AlignCenter)
+        lbl_title.setMaximumHeight(36)
+
+        # Create labels
+        lbl_credits = QLabel("Created By: Jason Somerton-Earle, Jeremy Cole, Joel Oram, & Noah Forward")
+        lbl_credits.setFont(QFont('Comic Sans MS', 12))
+        lbl_credits.setAlignment(Qt.AlignCenter)
+        lbl_credits.setMaximumHeight(30)
+
+        # Create main layout and add buttons and labels to it
         main_layout = QVBoxLayout()
+        main_layout.addWidget(lbl_title)
         main_layout.addWidget(btn_view_products)
         main_layout.addWidget(btn_view_oos_products)
         main_layout.addWidget(btn_view_recent_customers)
         main_layout.addWidget(btn_add_customer)
         main_layout.addWidget(btn_start_transaction)
         main_layout.addWidget(btn_add_stock)
+        main_layout.addWidget(lbl_credits)
 
         self.setLayout(main_layout)
 
