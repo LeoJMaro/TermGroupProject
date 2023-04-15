@@ -56,7 +56,7 @@ class HomepageWindow(QWidget):
         lbl_title.setMaximumHeight(36)
 
         # Create labels
-        lbl_credits = QLabel("Created By: Jason Somerton-Earle, Jeremy Cole, Joel Oram, & Noah Forward")
+        lbl_credits = QLabel("Created By: Jason Somerton-Earle, Gregory Dawe, Joel Oram, & Noah Forward")
         lbl_credits.setFont(QFont('Comic Sans MS', 12))
         lbl_credits.setAlignment(Qt.AlignCenter)
         lbl_credits.setMaximumHeight(30)
