@@ -656,7 +656,7 @@ class ViewCurrentInvoiceWindow(QWidget):
         cols = show_current_invoice(self.current_invoice_id)[0]
         self.model.setHorizontalHeaderLabels(cols)
 
-        #Disable vertical headers
+        # Disable vertical headers
         self.table_view.verticalHeader().setVisible(False)
 
         # Set width of column cells

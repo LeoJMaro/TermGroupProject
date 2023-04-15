@@ -93,8 +93,8 @@ def get_invoice_by_customer_id(customer_id):
     """
     Retrieves a list of invoices and their total cost for a given customer ID.
     :param customer_id: (int) The customer ID to retrieve invoices for
-    :return: (tuple) A tuple containing the column headers 'Invoice ID' and 'Total Cost' as the first element and a list of
-                     rows as the second element
+    :return: (tuple) A tuple containing the column headers 'Invoice ID' and 'Total Cost' as the first element and a list
+                     of rows as the second element
     """
     sql = f"SELECT ip.invoice_id AS 'Invoice ID', SUM(ip.product_quantity * p.price) AS 'Total Cost' FROM invoice_products AS ip JOIN products AS p ON ip.product_id = p.product_id JOIN invoices AS i ON ip.invoice_id = i.invoice_id WHERE i.customer_id = {customer_id} GROUP BY ip.invoice_id;"
     return executeQueryAndReturnResult(sql)
@@ -166,6 +166,7 @@ def show_current_invoice(invoice_id):
     sql = f"SELECT product_name AS 'Product Name', product_description AS 'Product Description', product_quantity AS 'Product Quantity', price AS 'Price' FROM invoice_products ip JOIN products p ON ip.product_id = p.product_id WHERE invoice_id = {invoice_id};"
     return executeQueryAndReturnResult(sql)
 
+
 def get_current_invoice_total(invoice_id):
     """
     Retrieves total price of the current invoice
@@ -175,6 +176,7 @@ def get_current_invoice_total(invoice_id):
     sql = f"SELECT SUM(price * product_quantity) AS 'Total Price' FROM invoice_products ip JOIN products p ON ip.product_id = p.product_id WHERE invoice_id = {invoice_id};"
     return executeQueryAndReturnResultNoColumnName(sql)[0][0]
 
+
 def get_current_invoice_quantity(invoice_id):
     """
         Retrieves total quantity of the current invoice
@@ -183,7 +185,6 @@ def get_current_invoice_quantity(invoice_id):
         """
     sql = f"SELECT SUM(product_quantity) AS 'Total Quantity' FROM invoice_products ip JOIN products p ON ip.product_id = p.product_id WHERE invoice_id = {invoice_id};"
     return executeQueryAndReturnResultNoColumnName(sql)[0][0]
-
 
 
 def search_invoice_by_customer_id(customer_id):
