@@ -495,9 +495,9 @@ class ViewCurrentInvoiceWindow(QWidget):
         self.pushButton = QPushButton(self)
         self.pushButton.setText('Close')
         self.pushButton.setGeometry(260, 450, 150, 30)
-        self.pushButton.clicked.connect(self.show_homepage)
+        self.pushButton.clicked.connect(self.close_page)
 
-        # create table view and set model
+        # Create table view and set model
         self.table_view = QTableView()
         self.model = QStandardItemModel()
         self.table_view.setModel(self.model)
@@ -508,31 +508,43 @@ class ViewCurrentInvoiceWindow(QWidget):
 
         self.table_view.verticalHeader().setVisible(False)
 
+        # Set width of column cells
         for col in range(len(cols)):
             self.table_view.setColumnWidth(col, 200)
 
+        # Get row data
         rows = show_current_invoice(self.current_invoice_id)[1]
 
-        self.model.insertRows(0, len(rows), QModelIndex())
+        # Insert empty rows to be filled
+        self.model.insertRows(0, len(rows)+1, QModelIndex())
 
+        # Fill row cells  with data and center their text
         for row, data in enumerate(rows):
             self.model.setItem(row, 0, QStandardItem(f"{rows[row][0]}"))
             self.model.setItem(row, 1, QStandardItem(f"{rows[row][1]}"))
             self.model.setItem(row, 2, QStandardItem(f"{rows[row][2]}"))
             self.model.setItem(row, 3, QStandardItem(f"{rows[row][3]}"))
-            self.model.setItem(row, 4, QStandardItem(f"{rows[row][4]}"))
 
             for col in range(len(cols)):
                 index = self.model.index(row, col, QModelIndex())
                 self.model.setData(index, Qt.AlignCenter, Qt.TextAlignmentRole)
 
-        # add table view to layout
+        # Fill summary row data
+        self.model.setItem(len(rows), 0, QStandardItem("Total:"))
+        self.model.setItem(len(rows), 3, QStandardItem(f"{get_current_invoice_total(self.current_invoice_id)}"))
+        # Center align summary row text
+        index1 = self.model.index(len(rows), 0, QModelIndex())
+        self.model.setData(index1, Qt.AlignCenter, Qt.TextAlignmentRole)
+        index2 = self.model.index(len(rows), 3, QModelIndex())
+        self.model.setData(index2, Qt.AlignCenter, Qt.TextAlignmentRole)
+
+        # Create main layout and add widgets
         layout = QVBoxLayout()
         layout.addWidget(self.table_view)
         layout.addWidget(self.pushButton)
         self.setLayout(layout)
 
-    def show_homepage(self):
+    def close_page(self):
         self.close()
 
 
